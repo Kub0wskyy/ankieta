@@ -80,7 +80,7 @@
       background: #555;
       cursor: not-allowed;
     }
-    .next-btn {
+    .next-btn, .start-survey-btn {
       width: 100%;
       padding: 12px;
       font-size: 16px;
@@ -96,6 +96,26 @@
       background-color: #cccccc;
       color: #666666;
       cursor: not-allowed;
+    }
+    .survey-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+    }
+    .survey-card-info h3 {
+      margin: 0 0 5px 0;
+      color: #007bff;
+      font-size: 18px;
+    }
+    .survey-card-info p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
     }
     .captcha-box {
       margin: 20px 0;
@@ -180,8 +200,23 @@
 <body>
 
 <div class="survey-container">
+  
+  <!-- EKRAN 0: LISTA DOSTĘPNYCH ANKIET -->
+  <div class="step active" id="step-0">
+    <h2>Dostępne ankiety</h2>
+    <p>Wybierz ankietę z listy poniżej, aby rozpocząć zarabianie:</p>
+    
+    <div class="survey-card">
+      <div class="survey-card-info">
+        <h3>Testowe Badanie Multimedialne</h3>
+        <p>Nagroda: <strong>2,00 zł</strong> | Czas: ok. 2 min</p>
+      </div>
+      <button type="button" class="start-survey-btn" id="start-list-btn" style="width: auto; margin: 0; padding: 10px 20px;">Rozpocznij</button>
+    </div>
+  </div>
+
   <!-- KROK 1: WIDEO + PYTANIA -->
-  <div class="step active" id="step-1">
+  <div class="step" id="step-1">
     <h2>Zadanie 1 z 3: Obejrzyj materiał wideo</h2>
     <p>Obejrzyj cały 30-sekundowy fragment filmu (przycisk „Dalej” odblokuje się dopiero po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
@@ -255,8 +290,8 @@
     </div>
   </div>
 
-  <!-- PRZYCISK DALEJ Z TIMEREM -->
-  <button type="button" id="next-btn" class="next-btn" disabled>Dalej (20)</button>
+  <!-- PRZYCISK DALEJ Z TIMEREM (Ukryty na ekranie listy 0) -->
+  <button type="button" id="next-btn" class="next-btn" style="display: none;" disabled>Dalej (20)</button>
 </div>
 
 <!-- OKIENKO POPUP (MODAL) -->
@@ -269,7 +304,7 @@
 </div>
 
 <script>
-  let currentStep = 1;
+  let currentStep = 0; // Zaczynamy od ekranu listy (0)
   let timerSeconds = 20;
   let timerInterval = null;
 
@@ -278,6 +313,15 @@
 
   const nextBtn = document.getElementById('next-btn');
 
+  // Przycisk "Rozpocznij" z listy ankiet
+  document.getElementById('start-list-btn').addEventListener('click', () => {
+    document.getElementById('step-0').classList.remove('active');
+    currentStep = 1;
+    document.getElementById('step-1').classList.add('active');
+    nextBtn.style.display = 'block';
+    startStepTimer();
+  });
+
   // --- GENEROWANIE NIEKOPIOWALNEGO ZDJĘCIA CAPTCHA (.PNG) ---
   function generateCaptchaImage() {
     const c = document.createElement('canvas');
@@ -285,11 +329,9 @@
     c.height = 70;
     const ctx = c.getContext('2d');
 
-    // Tło zdjęcia
     ctx.fillStyle = '#e8ecef';
     ctx.fillRect(0, 0, c.width, c.height);
 
-    // Szum i linie utrudniające zwykłe kopiowanie
     for (let i = 0; i < 6; i++) {
       ctx.strokeStyle = i % 2 === 0 ? '#888' : '#aaa';
       ctx.lineWidth = 2;
@@ -299,13 +341,11 @@
       ctx.stroke();
     }
 
-    // Rysowanie hasła na bitmapie (tekst: smwm)
     ctx.font = 'italic bold 36px Georgia, serif';
     ctx.fillStyle = '#222930';
     ctx.setTransform(1, -0.08, 0.12, 1, 0, 0);
     ctx.fillText(atob('c213bQ=='), 42, 50);
 
-    // Eksport do czystego pliku graficznego PNG (brak tekstu w DOM)
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
   generateCaptchaImage();
@@ -362,7 +402,6 @@
   captchaCheckBtn.addEventListener('click', () => {
     const val = captchaInput.value.trim().toLowerCase();
     modalOpen = true;
-    // Weryfikacja ze zakodowanym hasłem ze zdjęcia: 'smwm'
     if (val === atob('c213bQ==')) {
       modalTitle.textContent = 'Prawidłowo';
       modalTitle.style.color = '#28a745';
@@ -429,6 +468,7 @@
   }
 
   function updateNextButtonState() {
+    if (currentStep === 0) return;
     if (timerSeconds > 0) {
       nextBtn.textContent = `Dalej (${timerSeconds})`;
       nextBtn.disabled = true;
@@ -451,9 +491,6 @@
       startStepTimer();
     }
   });
-
-  // Inicjalizacja pierwszego timera po załadowaniu
-  startStepTimer();
 </script>
 
 </body>
