@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Ankietowy - Test 2</title>
+  <title>Panel Ankietowy - Test 3</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -223,7 +223,7 @@
   <!-- KROK 1: WIDEO + DOPASOWANE PYTANIA -->
   <div class="step" id="step-1">
     <h2>Zadanie 1 z 4: Obejrzyj materiał wideo</h2>
-    <p>Obejrzyj krótki, 15-sekundowy klip wideo (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
+    <p>Obejrzyj 10-sekundowy klip wideo (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
       <video 
@@ -232,28 +232,28 @@
         playsinline 
         disablePictureInPicture 
         controlsList="nodownload nofullscreen noremoteplayback">
-        <!-- Twoje oryginalne wideo, które trwa 15 sekund -->
-        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+        <!-- Bezpieczny, działający link edukacyjny z W3Schools -->
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
       </video>
       <div class="video-controls">
         <button type="button" id="video-start-btn">Start</button>
         <button type="button" id="video-pause-btn">Pauza</button>
-        <span id="video-status">Czas: 0 / 14 s</span>
+        <span id="video-status">Czas: 0 / 9 s</span>
       </div>
     </div>
 
     <div class="question-group">
-      <p>1. Jakiego rodzaju jest to materiał wideo?</p>
-      <label><input type="radio" name="q1_seen" value="reklama"> Krótka animacja / reklama związana z telewizją</label>
-      <label><input type="radio" name="q1_seen" value="zwierzeta"> Film przyrodniczy o dzikich zwierzętach</label>
-      <label><input type="radio" name="q1_seen" value="teledysk"> Teledysk muzyczny zespołu rockowego</label>
+      <p>1. Jakie zwierzę jest głównym bohaterem tego nagrania?</p>
+      <label><input type="radio" name="q1_seen" value="krolik"> Duży królik</label>
+      <label><input type="radio" name="q1_seen" value="pies"> Mały szczeniak</label>
+      <label><input type="radio" name="q1_seen" value="kot"> Kot domowy</label>
     </div>
 
     <div class="question-group">
-      <p>2. Co głównie widziałeś na ekranie podczas tego filmu?</p>
-      <label><input type="radio" name="q1_action" value="telewizor"> Animowane elementy lub telewizor z różnymi aplikacjami</label>
-      <label><input type="radio" name="q1_action" value="szczeniak"> Szczeniaka bawiącego się na trawie</label>
-      <label><input type="radio" name="q1_action" value="samochody"> Szybkie samochody wyścigowe</label>
+      <p>2. Co robi zwierzę w tym nagraniu?</p>
+      <label><input type="radio" name="q1_action" value="budzisie"> Budzi się i przeciąga na trawie</label>
+      <label><input type="radio" name="q1_action" value="biega"> Biegnie za piłką</label>
+      <label><input type="radio" name="q1_action" value="plywa"> Pływa w rzece</label>
     </div>
   </div>
 
@@ -385,8 +385,8 @@
   const pauseBtn = document.getElementById('video-pause-btn');
   const videoStatus = document.getElementById('video-status');
 
-  // Skrócono wymagany czas do 14 sekund (oryginalne wideo ma 15 sekund)
-  const REQUIRED_WATCH_SECONDS = 14;
+  // Wymagany czas 9 sekund (film ma dokładnie 10.02s)
+  const REQUIRED_WATCH_SECONDS = 9;
 
   startBtn.addEventListener('click', () => {
     if (videoCompleted) return;
@@ -412,7 +412,6 @@
     }
   });
 
-  // W razie gdyby wideo się skończyło zanim licznik dobije 14s (np. minimalne opóźnienia)
   videoEl.addEventListener('ended', () => {
     if (!videoCompleted) {
       videoCompleted = true;
