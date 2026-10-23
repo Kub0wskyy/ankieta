@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Ankietowy - Test 1</title>
+  <title>Panel Ankietowy - Test 2</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -220,10 +220,10 @@
     </div>
   </div>
 
-  <!-- KROK 1: WIDEO Z ZWIERZĘTAMI + DOPASOWANE PYTANIA -->
+  <!-- KROK 1: WIDEO + DOPASOWANE PYTANIA -->
   <div class="step" id="step-1">
     <h2>Zadanie 1 z 4: Obejrzyj materiał wideo</h2>
-    <p>Obejrzyj 10-sekundowy fragment filmu (przycisk „Dalej” odblokuje się po obejrzeniu i zaznaczeniu odpowiedzi).</p>
+    <p>Obejrzyj krótki, 15-sekundowy klip wideo (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
       <video 
@@ -232,28 +232,28 @@
         playsinline 
         disablePictureInPicture 
         controlsList="nodownload nofullscreen noremoteplayback">
-        <!-- Zmieniono na wideo z królikiem i innymi zwierzętami (Big Buck Bunny) -->
-        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+        <!-- Twoje oryginalne wideo, które trwa 15 sekund -->
+        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
       </video>
       <div class="video-controls">
         <button type="button" id="video-start-btn">Start</button>
         <button type="button" id="video-pause-btn">Pauza</button>
-        <span id="video-status">Czas: 0 / 10 s</span>
+        <span id="video-status">Czas: 0 / 14 s</span>
       </div>
     </div>
 
     <div class="question-group">
-      <p>1. Jakie zwierzęta pojawiają się na początku nagrania?</p>
-      <label><input type="radio" name="q1_seen" value="krolik_motyle"> Duży królik, ptak i latające motyle</label>
-      <label><input type="radio" name="q1_seen" value="psy_koty"> Małe psy (szczeniaki) oraz koty</label>
-      <label><input type="radio" name="q1_seen" value="ryby"> Egzotyczne ryby akwariowe</label>
+      <p>1. Jakiego rodzaju jest to materiał wideo?</p>
+      <label><input type="radio" name="q1_seen" value="reklama"> Krótka animacja / reklama związana z telewizją</label>
+      <label><input type="radio" name="q1_seen" value="zwierzeta"> Film przyrodniczy o dzikich zwierzętach</label>
+      <label><input type="radio" name="q1_seen" value="teledysk"> Teledysk muzyczny zespołu rockowego</label>
     </div>
 
     <div class="question-group">
-      <p>2. Co robił królik w jednej z początkowych scen filmu?</p>
-      <label><input type="radio" name="q1_action" value="biegal"> Biegał szybko za piłką po trawie</label>
-      <label><input type="radio" name="q1_action" value="budzil_sie"> Budził się ze snu i przeciągał w norze</label>
-      <label><input type="radio" name="q1_action" value="nurkowal"> Nurkował w głębokim oceanie</label>
+      <p>2. Co głównie widziałeś na ekranie podczas tego filmu?</p>
+      <label><input type="radio" name="q1_action" value="telewizor"> Animowane elementy lub telewizor z różnymi aplikacjami</label>
+      <label><input type="radio" name="q1_action" value="szczeniak"> Szczeniaka bawiącego się na trawie</label>
+      <label><input type="radio" name="q1_action" value="samochody"> Szybkie samochody wyścigowe</label>
     </div>
   </div>
 
@@ -334,7 +334,7 @@
   });
 
   let currentStep = 0;
-  let timerSeconds = 20; // Możesz zmniejszyć na czas testów
+  let timerSeconds = 20;
   let timerInterval = null;
 
   let videoCompleted = false;
@@ -373,8 +373,7 @@
     ctx.font = 'italic bold 36px Georgia, serif';
     ctx.fillStyle = '#222930';
     ctx.setTransform(1, -0.08, 0.12, 1, 0, 0);
-    // base64 'c213bQ==' daje 'smwm'
-    ctx.fillText(atob('c213bQ=='), 42, 50);
+    ctx.fillText(atob('c213bQ=='), 42, 50); // Wpisuje kod "smwm"
 
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
@@ -386,8 +385,8 @@
   const pauseBtn = document.getElementById('video-pause-btn');
   const videoStatus = document.getElementById('video-status');
 
-  // Skrócono z 30 do 10 sekund (aby można było to zaliczyć)
-  const REQUIRED_WATCH_SECONDS = 10;
+  // Skrócono wymagany czas do 14 sekund (oryginalne wideo ma 15 sekund)
+  const REQUIRED_WATCH_SECONDS = 14;
 
   startBtn.addEventListener('click', () => {
     if (videoCompleted) return;
@@ -401,9 +400,8 @@
   videoEl.addEventListener('timeupdate', () => {
     if (videoCompleted) return;
 
-    const watched = Math.min(REQUIRED_WATCH_SECONDS, Math.floor(videoEl.currentTime));
+    const watched = Math.floor(videoEl.currentTime);
     if (watched >= REQUIRED_WATCH_SECONDS) {
-      videoEl.pause();
       videoCompleted = true;
       startBtn.disabled = true;
       pauseBtn.disabled = true;
@@ -411,6 +409,17 @@
       updateNextButtonState();
     } else {
       videoStatus.textContent = `Czas: ${watched} / ${REQUIRED_WATCH_SECONDS} s`;
+    }
+  });
+
+  // W razie gdyby wideo się skończyło zanim licznik dobije 14s (np. minimalne opóźnienia)
+  videoEl.addEventListener('ended', () => {
+    if (!videoCompleted) {
+      videoCompleted = true;
+      startBtn.disabled = true;
+      pauseBtn.disabled = true;
+      videoStatus.textContent = `Czas: ${REQUIRED_WATCH_SECONDS} / ${REQUIRED_WATCH_SECONDS} s (Obejrzano całość)`;
+      updateNextButtonState();
     }
   });
 
