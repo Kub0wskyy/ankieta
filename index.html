@@ -313,6 +313,14 @@
 </div>
 
 <script>
+  // Wymuszenie czyszczenia formularzy i pamięci przeglądarki przy odświeżeniu (F5)
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "reload") {
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+    }
+  });
+
   let currentStep = 0;
   let timerSeconds = 20;
   let timerInterval = null;
@@ -402,8 +410,7 @@
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       
-      // 1. Generowanie białego szumu (wiatr)
-      const bufferSize = audioCtx.sampleRate * 2; // 2 sekundy szumu
+      const bufferSize = audioCtx.sampleRate * 2;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
@@ -426,12 +433,11 @@
 
       noise.start();
 
-      // 2. Generowanie tonu dzwonka
       setTimeout(() => {
         const osc = audioCtx.createOscillator();
         const oscGain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // Wysokie C (C6)
+        osc.frequency.setValueAtTime(1046.5, audioCtx.currentTime);
         
         oscGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
         oscGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
