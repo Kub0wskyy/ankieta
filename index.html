@@ -32,15 +32,26 @@
     }
     .question-group {
       margin: 20px 0;
+      background: #fdfdfd;
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 6px;
     }
     .question-group p {
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+      margin-top: 0;
     }
     label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    label:hover {
+      background: #f0f0f0;
     }
     .video-box, .audio-box {
       background: #222;
@@ -67,13 +78,17 @@
       font-size: 14px;
     }
     button {
-      padding: 6px 14px;
+      padding: 8px 16px;
       cursor: pointer;
       border: none;
       border-radius: 4px;
       background: #007bff;
       color: white;
       font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover:not(:disabled) {
+      background: #0056b3;
     }
     button:disabled {
       background: #555;
@@ -81,7 +96,7 @@
     }
     .next-btn, .start-survey-btn {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       font-size: 16px;
       font-weight: bold;
       border: none;
@@ -90,6 +105,9 @@
       color: white;
       cursor: pointer;
       margin-top: 20px;
+    }
+    .next-btn:hover:not(:disabled), .start-survey-btn:hover {
+      background-color: #218838;
     }
     .next-btn:disabled {
       background-color: #cccccc;
@@ -137,12 +155,11 @@
       justify-content: center;
     }
     .captcha-input-row input {
-      padding: 8px;
+      padding: 10px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    /* Okienko modalne */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -203,10 +220,10 @@
     </div>
   </div>
 
-  <!-- KROK 1: WIDEO + PYTANIA -->
+  <!-- KROK 1: WIDEO Z ZWIERZĘTAMI + DOPASOWANE PYTANIA -->
   <div class="step" id="step-1">
     <h2>Zadanie 1 z 4: Obejrzyj materiał wideo</h2>
-    <p>Obejrzyj cały 30-sekundowy fragment filmu (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
+    <p>Obejrzyj 10-sekundowy fragment filmu (przycisk „Dalej” odblokuje się po obejrzeniu i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
       <video 
@@ -215,28 +232,28 @@
         playsinline 
         disablePictureInPicture 
         controlsList="nodownload nofullscreen noremoteplayback">
-        <source src="https://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4">
-        <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+        <!-- Zmieniono na wideo z królikiem i innymi zwierzętami (Big Buck Bunny) -->
+        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
       </video>
       <div class="video-controls">
         <button type="button" id="video-start-btn">Start</button>
         <button type="button" id="video-pause-btn">Pauza</button>
-        <span id="video-status">Czas: 0 / 30 s</span>
+        <span id="video-status">Czas: 0 / 10 s</span>
       </div>
     </div>
 
     <div class="question-group">
-      <p>1. Co widziałeś na nagraniu wideo?</p>
-      <label><input type="radio" name="q1_seen" value="dziewczyna_i_smok"> Postać kobiecą (wojowniczkę), zaśnieżoną krainę oraz małego futrzatego smoka</label>
-      <label><input type="radio" name="q1_seen" value="gotowanie_potrawy"> Instruktaż gotowania zupy w kuchni restauracji</label>
-      <label><input type="radio" name="q1_seen" value="wyscig_auto"> Wyścig samochodów sportowych nocą na ulicach miasta</label>
+      <p>1. Jakie zwierzęta pojawiają się na początku nagrania?</p>
+      <label><input type="radio" name="q1_seen" value="krolik_motyle"> Duży królik, ptak i latające motyle</label>
+      <label><input type="radio" name="q1_seen" value="psy_koty"> Małe psy (szczeniaki) oraz koty</label>
+      <label><input type="radio" name="q1_seen" value="ryby"> Egzotyczne ryby akwariowe</label>
     </div>
 
     <div class="question-group">
-      <p>2. Co słyszałeś w trakcie odtwarzania filmu?</p>
-      <label><input type="radio" name="q1_heard" value="odglosy_kuchni"> Dźwięk siekania warzyw i skwierczenia patelni</label>
-      <label><input type="radio" name="q1_heard" value="muzyka_fantastyczna"> Epicką, orkiestrową muzykę filmową, wiatr oraz odgłosy walki</label>
-      <label><input type="radio" name="q1_heard" value="fala_radiowa"> Szum zakłóceń radiowych i komunikat policyjny</label>
+      <p>2. Co robił królik w jednej z początkowych scen filmu?</p>
+      <label><input type="radio" name="q1_action" value="biegal"> Biegał szybko za piłką po trawie</label>
+      <label><input type="radio" name="q1_action" value="budzil_sie"> Budził się ze snu i przeciągał w norze</label>
+      <label><input type="radio" name="q1_action" value="nurkowal"> Nurkował w głębokim oceanie</label>
     </div>
   </div>
 
@@ -252,7 +269,7 @@
     </div>
   </div>
 
-  <!-- KROK 3: ODSŁUCH AUDIO (AUTOMATYCZNY) -->
+  <!-- KROK 3: ODSŁUCH AUDIO -->
   <div class="step" id="step-3">
     <h2>Zadanie 3 z 4: Test odsłuchu audio</h2>
     <p>Plik dźwiękowy odtworzy się automatycznie po przejściu do tego kroku. Wysłuchaj go uważnie.</p>
@@ -262,8 +279,8 @@
     </div>
 
     <div class="question-group">
-      <p>Co słyszałeś na powyższym nagraniu audio?</p>
-      <label><input type="radio" name="q3_audio" value="szum_i_dzwonek"> Szum wiatru oraz wysoki dźwięk dzwonka</label>
+      <p>Co słyszałeś na wygenerowanym nagraniu audio?</p>
+      <label><input type="radio" name="q3_audio" value="szum_i_dzwonek"> Szum przypominający wiatr oraz wysoki sygnał (dzwonek)</label>
       <label><input type="radio" name="q3_audio" value="szczekanie_psa"> Szczekanie psa w tle i miauczenie kota</label>
       <label><input type="radio" name="q3_audio" value="klakson_autobusowy"> Trąbienie klaksonu samochodowego na ulicy</label>
     </div>
@@ -317,7 +334,7 @@
   });
 
   let currentStep = 0;
-  let timerSeconds = 20;
+  let timerSeconds = 20; // Możesz zmniejszyć na czas testów
   let timerInterval = null;
 
   let videoCompleted = false;
@@ -356,19 +373,21 @@
     ctx.font = 'italic bold 36px Georgia, serif';
     ctx.fillStyle = '#222930';
     ctx.setTransform(1, -0.08, 0.12, 1, 0, 0);
+    // base64 'c213bQ==' daje 'smwm'
     ctx.fillText(atob('c213bQ=='), 42, 50);
 
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
   generateCaptchaImage();
 
-  // --- OBSŁUGA WIDEO (30 SEKUND) ---
+  // --- OBSŁUGA WIDEO ---
   const videoEl = document.getElementById('survey-video');
   const startBtn = document.getElementById('video-start-btn');
   const pauseBtn = document.getElementById('video-pause-btn');
   const videoStatus = document.getElementById('video-status');
 
-  const REQUIRED_WATCH_SECONDS = 30;
+  // Skrócono z 30 do 10 sekund (aby można było to zaliczyć)
+  const REQUIRED_WATCH_SECONDS = 10;
 
   startBtn.addEventListener('click', () => {
     if (videoCompleted) return;
@@ -440,7 +459,7 @@
         osc.stop(audioCtx.currentTime + 1.0);
       }, 1000);
 
-      audioStatusBox.textContent = 'Status: Odtzucono i zakończono odsłuch.';
+      audioStatusBox.textContent = 'Status: Odtworzono i zakończono odsłuch.';
       audioCompleted = true;
       updateNextButtonState();
     } catch (e) {
@@ -499,10 +518,10 @@
     updateNextButtonState();
   });
 
-  // --- TIMER 20 SEKUND DLA KAŻDEGO KROKU ---
+  // --- TIMER DLA KAŻDEGO KROKU ---
   function startStepTimer() {
     clearInterval(timerInterval);
-    timerSeconds = 20;
+    timerSeconds = 20; 
     updateNextButtonState();
 
     timerInterval = setInterval(() => {
@@ -521,8 +540,8 @@
 
     if (currentStep === 1) {
       const q1Seen = document.querySelector('input[name="q1_seen"]:checked');
-      const q1Heard = document.querySelector('input[name="q1_heard"]:checked');
-      return videoCompleted && q1Seen !== null && q1Heard !== null;
+      const q1Action = document.querySelector('input[name="q1_action"]:checked');
+      return videoCompleted && q1Seen !== null && q1Action !== null;
     }
     if (currentStep === 2) {
       const q2Att = document.querySelector('input[name="q2_attention"]:checked');
