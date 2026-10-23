@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Ankietowy - Test 3 z Koszykiem</title>
+  <title>Panel Ankietowy - Test 4 z Koszykiem na początku</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -200,8 +200,6 @@
     .reward-screen h2 {
       color: #28a745;
     }
-
-    /* NOWE STYLE DLA DRAG & DROP */
     .dnd-area {
       display: flex;
       flex-direction: column;
@@ -271,9 +269,32 @@
     </div>
   </div>
 
-  <!-- KROK 1: WIDEO + DOPASOWANE PYTANIA -->
+  <!-- KROK 1: DRAG & DROP KOSZYK -->
   <div class="step" id="step-1">
-    <h2>Zadanie 1 z 5: Obejrzyj materiał wideo</h2>
+    <h2>Zadanie 1 z 5: Układanie wyrazu</h2>
+    <p style="background: #007bff; color: white; padding: 10px; border-radius: 4px; display: inline-block;">
+      Przeciągnij do koszyka litery, z których składa się w słowo <strong>sad</strong>.
+    </p>
+
+    <div class="dnd-area">
+      <div class="letters-source" id="letters-source">
+        <div class="letter-box" draggable="true" data-letter="D">D</div>
+        <div class="letter-box" draggable="true" data-letter="V">V</div>
+        <div class="letter-box" draggable="true" data-letter="G">G</div>
+        <div class="letter-box" draggable="true" data-letter="Ć">Ć</div>
+        <div class="letter-box" draggable="true" data-letter="S">S</div>
+        <div class="letter-box" draggable="true" data-letter="A">A</div>
+      </div>
+      
+      <div class="basket-zone" id="basket-zone">
+        <div class="basket-icon">🛒</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KROK 2: WIDEO + DOPASOWANE PYTANIA -->
+  <div class="step" id="step-2">
+    <h2>Zadanie 2 z 5: Obejrzyj materiał wideo</h2>
     <p>Obejrzyj 10-sekundowy klip wideo (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
@@ -302,9 +323,9 @@
     </div>
   </div>
 
-  <!-- KROK 2: TEST UWAŻNOŚCI -->
-  <div class="step" id="step-2">
-    <h2>Zadanie 2 z 5: Pytanie kontrolne</h2>
+  <!-- KROK 3: TEST UWAŻNOŚCI -->
+  <div class="step" id="step-3">
+    <h2>Zadanie 3 z 5: Pytanie kontrolne</h2>
     <div class="question-group">
       <p>To pytanie sprawdza Twoją uważność. Niezależnie od własnych preferencji, zaznacz odpowiedź „Pomarańczowy”, aby potwierdzić, że czytasz polecenia.</p>
       <label><input type="radio" name="q2_attention" value="niebieski"> Niebieski</label>
@@ -314,9 +335,9 @@
     </div>
   </div>
 
-  <!-- KROK 3: ODSŁUCH AUDIO -->
-  <div class="step" id="step-3">
-    <h2>Zadanie 3 z 5: Test odsłuchu audio</h2>
+  <!-- KROK 4: ODSŁUCH AUDIO -->
+  <div class="step" id="step-4">
+    <h2>Zadanie 4 z 5: Test odsłuchu audio</h2>
     <p>Plik dźwiękowy odtworzy się automatycznie po przejściu do tego kroku. Wysłuchaj go uważnie.</p>
 
     <div class="audio-box">
@@ -331,9 +352,9 @@
     </div>
   </div>
 
-  <!-- KROK 4: CAPTCHA (ZDJĘCIE PNG) + MODAL -->
-  <div class="step" id="step-4">
-    <h2>Zadanie 4 z 5: Weryfikacja znaków</h2>
+  <!-- KROK 5: CAPTCHA -->
+  <div class="step" id="step-5">
+    <h2>Zadanie 5 z 5: Weryfikacja znaków</h2>
     <p>Przepisz dokładnie znaki widoczne na poniższym zdjęciu i zatwierdź je przyciskiem „Sprawdź”.</p>
 
     <div class="captcha-box" oncontextmenu="return false;">
@@ -341,31 +362,6 @@
       <div class="captcha-input-row">
         <input type="text" id="captcha-input" placeholder="Wpisz znaki ze zdjęcia..." autocomplete="off">
         <button type="button" id="captcha-check-btn">Sprawdź</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- KROK 5: DRAG & DROP KOSZYK (NOWE ZADANIE) -->
-  <div class="step" id="step-5">
-    <h2>Zadanie 5 z 5: Układanie wyrazu</h2>
-    <p style="background: #007bff; color: white; padding: 10px; border-radius: 4px; display: inline-block;">
-      Przeciągnij do koszyka litery, z których składa się w słowo <strong>sad</strong>.
-    </p>
-
-    <div class="dnd-area">
-      <!-- Pudełko źródłowe z literami (pomieszane) -->
-      <div class="letters-source" id="letters-source">
-        <div class="letter-box" draggable="true" data-letter="D">D</div>
-        <div class="letter-box" draggable="true" data-letter="V">V</div>
-        <div class="letter-box" draggable="true" data-letter="G">G</div>
-        <div class="letter-box" draggable="true" data-letter="Ć">Ć</div>
-        <div class="letter-box" draggable="true" data-letter="S">S</div>
-        <div class="letter-box" draggable="true" data-letter="A">A</div>
-      </div>
-      
-      <!-- Koszyk -->
-      <div class="basket-zone" id="basket-zone">
-        <div class="basket-icon">🛒</div>
       </div>
     </div>
   </div>
@@ -447,7 +443,56 @@
   }
   generateCaptchaImage();
 
-  // --- OBSŁUGA WIDEO ---
+  // --- OBSŁUGA DRAG & DROP (KROK 1) ---
+  const letterBoxes = document.querySelectorAll('.letter-box');
+  const sourceZone = document.getElementById('letters-source');
+  const basketZone = document.getElementById('basket-zone');
+  let draggedItem = null;
+
+  letterBoxes.forEach(box => {
+    box.addEventListener('dragstart', function() {
+      draggedItem = this;
+      setTimeout(() => this.style.opacity = '0.5', 0);
+    });
+
+    box.addEventListener('dragend', function() {
+      setTimeout(() => {
+        this.style.opacity = '1';
+        draggedItem = null;
+      }, 0);
+    });
+  });
+
+  [sourceZone, basketZone].forEach(zone => {
+    zone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+    });
+
+    zone.addEventListener('drop', function(e) {
+      if (draggedItem) {
+        this.appendChild(draggedItem);
+        checkBasketWord();
+      }
+    });
+  });
+
+  function checkBasketWord() {
+    const lettersInBasket = Array.from(basketZone.querySelectorAll('.letter-box'))
+                                 .map(el => el.getAttribute('data-letter'));
+    
+    // Sprawdza czy w koszyku są dokładnie 3 litery (S, A, D) niezależnie od kolejności
+    if (lettersInBasket.length === 3 && 
+        lettersInBasket.includes('S') && 
+        lettersInBasket.includes('A') && 
+        lettersInBasket.includes('D')) {
+      isBasketValid = true;
+    } else {
+      isBasketValid = false;
+    }
+    updateNextButtonState();
+  }
+
+  // --- OBSŁUGA WIDEO (KROK 2) ---
   const videoEl = document.getElementById('survey-video');
   const startBtn = document.getElementById('video-start-btn');
   const pauseBtn = document.getElementById('video-pause-btn');
@@ -465,7 +510,6 @@
 
   videoEl.addEventListener('timeupdate', () => {
     if (videoCompleted) return;
-
     const watched = Math.floor(videoEl.currentTime);
     if (watched >= REQUIRED_WATCH_SECONDS) {
       videoCompleted = true;
@@ -488,33 +532,28 @@
     }
   });
 
-  // --- AUTOMATYCZNE ODTWARZANIE AUDIO NA KROKU 3 ---
+  // --- AUTOMATYCZNE ODTWARZANIE AUDIO (KROK 4) ---
   function playAutomaticAudio() {
     const audioStatusBox = document.getElementById('audio-status-box');
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      
       const bufferSize = audioCtx.sampleRate * 2;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
         data[i] = Math.random() * 2 - 1;
       }
-
       const noise = audioCtx.createBufferSource();
       noise.buffer = buffer;
-
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.value = 800;
-
       const gainNode = audioCtx.createGain();
       gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
 
       noise.connect(filter);
       filter.connect(gainNode);
       gainNode.connect(audioCtx.destination);
-
       noise.start();
 
       setTimeout(() => {
@@ -543,7 +582,7 @@
     }
   }
 
-  // --- OBSŁUGA CAPTCHA I MODALA ---
+  // --- OBSŁUGA CAPTCHA I MODALA (KROK 5) ---
   const captchaInput = document.getElementById('captcha-input');
   const captchaCheckBtn = document.getElementById('captcha-check-btn');
   const modalOverlay = document.getElementById('modal-overlay');
@@ -587,54 +626,6 @@
     updateNextButtonState();
   });
 
-  // --- NOWE: OBSŁUGA DRAG & DROP (KROK 5) ---
-  const letterBoxes = document.querySelectorAll('.letter-box');
-  const sourceZone = document.getElementById('letters-source');
-  const basketZone = document.getElementById('basket-zone');
-  let draggedItem = null;
-
-  letterBoxes.forEach(box => {
-    box.addEventListener('dragstart', function() {
-      draggedItem = this;
-      setTimeout(() => this.style.opacity = '0.5', 0);
-    });
-
-    box.addEventListener('dragend', function() {
-      setTimeout(() => {
-        this.style.opacity = '1';
-        draggedItem = null;
-      }, 0);
-    });
-  });
-
-  [sourceZone, basketZone].forEach(zone => {
-    zone.addEventListener('dragover', function(e) {
-      e.preventDefault(); // Pozwala na upuszczenie
-    });
-
-    zone.addEventListener('drop', function(e) {
-      if (draggedItem) {
-        this.appendChild(draggedItem);
-        checkBasketWord();
-      }
-    });
-  });
-
-  function checkBasketWord() {
-    const lettersInBasket = Array.from(basketZone.querySelectorAll('.letter-box'))
-                                 .map(el => el.getAttribute('data-letter'))
-                                 .join('');
-    
-    // Sprawdzamy czy ułożone słowo w koszyku to dokładnie "SAD"
-    if (lettersInBasket === 'SAD') {
-      isBasketValid = true;
-    } else {
-      isBasketValid = false;
-    }
-    updateNextButtonState();
-  }
-
-
   // --- LOGIKA FORMULARZA I TIMERA ---
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', updateNextButtonState);
@@ -660,23 +651,23 @@
     if (modalOpen) return false;
 
     if (currentStep === 1) {
+      return isBasketValid;
+    }
+    if (currentStep === 2) {
       const q1Seen = document.querySelector('input[name="q1_seen"]:checked');
       const q1Action = document.querySelector('input[name="q1_action"]:checked');
       return videoCompleted && q1Seen !== null && q1Action !== null;
     }
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       const q2Att = document.querySelector('input[name="q2_attention"]:checked');
       return q2Att !== null;
     }
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       const q3Audio = document.querySelector('input[name="q3_audio"]:checked');
       return audioCompleted && q3Audio !== null;
     }
-    if (currentStep === 4) {
-      return captchaVerified;
-    }
     if (currentStep === 5) {
-      return isBasketValid; // Zwraca prawde, gdy ułożone słowo to 'SAD'
+      return captchaVerified;
     }
     return false;
   }
@@ -699,12 +690,12 @@
     currentStep++;
     document.getElementById(`step-${currentStep}`).classList.add('active');
 
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       playAutomaticAudio();
     }
 
     if (currentStep === 6) {
-      nextBtn.style.display = 'none'; // Koniec ankiety, ukrywamy przycisk
+      nextBtn.style.display = 'none';
     } else {
       startStepTimer();
     }
