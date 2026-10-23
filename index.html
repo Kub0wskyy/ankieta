@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Ankietowy - Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .survey-container {
+      background: #ffffff;
+      width: 600px;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    .question-group {
+      margin: 20px 0;
+    }
+    .question-group p {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .video-box {
+      background: #000;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    video {
+      width: 100%;
+      height: 280px;
+      display: block;
+      background: #111;
+    }
+    .video-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #222;
+      padding: 10px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .video-controls button {
+      padding: 6px 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+    }
+    .next-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .next-btn:disabled {
+      background-color: #cccccc;
+      color: #666666;
+      cursor: not-allowed;
+    }
+    .captcha-box {
+      margin: 15px 0;
+      text-align: center;
+    }
+    .captcha-box img {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .captcha-input-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .captcha-input-row input {
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .captcha-input-row button {
+      padding: 8px 16px;
+      font-size: 15px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    /* Okienko modalne */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-window {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .modal-window h3 {
+      margin-top: 0;
+    }
+    .modal-close-btn {
+      margin-top: 15px;
+      padding: 8px 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .reward-screen {
+      text-align: center;
+      padding: 30px 10px;
+    }
+    .reward-screen h2 {
+      color: #28a745;
+    }
+  </style>
+</head>
+<body>
+
+<div class="survey-container">
+  <!-- KROK 1: WIDEO + PYTANIA -->
+  <div class="step active" id="step-1">
+    <h2>Zadanie 1 z 3: Obejrzyj materiał wideo</h2>
+    <p>Obejrzyj cały 30-sekundowy film, a następnie odpowiedz na pytania poniżej.</p>
+
+    <div class="video-box">
+      <video id="survey-video" playsinline></video>
+      <div class="video-controls">
+        <button type="button" id="video-start-btn">Start</button>
+        <button type="button" id="video-pause-btn">Pauza</button>
+        <span id="video-status">Czas: 0 / 30 s</span>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <p>1. Co widziałeś na ekranie podczas materiału?</p>
+      <label><input type="radio" name="q1_seen" value="zielony_trojkat"> Zielony trójkąt</label>
+      <label><input type="radio" name="q1_seen" value="niebieski_okrag"> Niebieski okrąg</label>
+      <label><input type="radio" name="q1_seen" value="czerwony_kwadrat"> Czerwony kwadrat</label>
+    </div>
+
+    <div class="question-group">
+      <p>2. Jaki komunikat dźwiękowy / tekstowy pojawił się w połowie filmu?</p>
+      <label><input type="radio" name="q1_heard" value=" sygnal_alarmowy"> Sygnał alarmowy</label>
+      <label><input type="radio" name="q1_heard" value="haslo_alfa"> Hasło: ALFA</label>
+      <label><input type="radio" name="q1_heard" value="szum_morza"> Szum morza</label>
+    </div>
+  </div>
+
+  <!-- KROK 2: TEST UWAŻNOŚCI -->
+  <div class="step" id="step-2">
+    <h2>Zadanie 2 z 3: Pytanie kontrolne</h2>
+    <div class="question-group">
+      <p>To pytanie sprawdza Twoją uważność. Niezależnie od własnych preferencji, zaznacz odpowiedź „Pomarańczowy”, aby potwierdzić, że czytasz polecenia.</p>
+      <label><input type="radio" name="q2_attention" value="niebieski"> Niebieski</label>
+      <label><input type="radio" name="q2_attention" value="pomaranczowy"> Pomarańczowy</label>
+      <label><input type="radio" name="q2_attention" value="zielony"> Zielony</label>
+      <label><input type="radio" name="q2_attention" value="czarny"> Czarny</label>
+    </div>
+  </div>
+
+  <!-- KROK 3: CAPTCHA + MODAL -->
+  <div class="step" id="step-3">
+    <h2>Zadanie 3 z 3: Weryfikacja znaków</h2>
+    <p>Przepisz dokładnie kod widoczny na poniższym obrazku i zatwierdź go przyciskiem „Sprawdź”.</p>
+
+    <div class="captcha-box">
+      <!-- Statyczny obrazek CAPTCHA zakodowany jako SVG (kod: X7K9P) -->
+      <img id="captcha-img" alt="Captcha" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='70'><rect width='100%' height='100%' fill='%23eeeeee'/><line x1='10' y1='15' x2='210' y2='55' stroke='%23999' stroke-width='2'/><line x1='20' y1='60' x2='190' y2='10' stroke='%23aaa' stroke-width='2'/><text x='35' y='48' font-family='monospace' font-size='34' font-weight='bold' fill='%23222' letter-spacing='6'>X7K9P</text></svg>">
+      <div class="captcha-input-row">
+        <input type="text" id="captcha-input" placeholder="Wpisz kod z obrazka..." autocomplete="off">
+        <button type="button" id="captcha-check-btn">Sprawdź</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EKRAN KOŃCOWY -->
+  <div class="step" id="step-4">
+    <div class="reward-screen">
+      <h2>Ukończona ankieta!</h2>
+      <p>Dziękujemy za udział w badaniu.</p>
+      <h3>Zarobiłeś: 2,00 zł</h3>
+    </div>
+  </div>
+
+  <!-- PRZYCISK DALEJ Z TIMEREM -->
+  <button type="button" id="next-btn" class="next-btn" disabled>Dalej (20)</button>
+</div>
+
+<!-- OKIENKO POPUP (MODAL) -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-window">
+    <h3 id="modal-title">Komunikat</h3>
+    <p id="modal-message"></p>
+    <button type="button" class="modal-close-btn" id="modal-close-btn">Zamknij</button>
+  </div>
+</div>
+
+<script>
+  let currentStep = 1;
+  let timerSeconds = 20;
+  let timerInterval = null;
+
+  // Flagi ukończenia zadań
+  let videoCompleted = false;
+  let captchaVerified = false;
+
+  const nextBtn = document.getElementById('next-btn');
+
+  // --- GENEROWANIE 30-SEKUNDOWEGO STRUMIENIA WIDEO W ELEMENT <video> ---
+  const videoEl = document.getElementById('survey-video');
+  const startBtn = document.getElementById('video-start-btn');
+  const pauseBtn = document.getElementById('video-pause-btn');
+  const videoStatus = document.getElementById('video-status');
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 640;
+  canvas.height = 360;
+  const ctx = canvas.getContext('2d');
+
+  if (canvas.captureStream) {
+    videoEl.srcObject = canvas.captureStream(30);
+  }
+
+  let watchedTime = 0;
+  let isPlaying = false;
+  let videoTicker = null;
+
+  function drawVideoFrame() {
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Rysowanie czerwonego kwadratu
+    ctx.fillStyle = '#e53935';
+    ctx.fillRect(260, 90, 120, 120);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '22px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Materiał testowy - Obiekt: Czerwony kwadrat', 320, 50);
+
+    if (watchedTime >= 12 && watchedTime <= 22) {
+      ctx.fillStyle = '#ffeb3b';
+      ctx.font = 'bold 26px Arial';
+      ctx.fillText(' komunikat: Hasło ALFA ', 320, 260);
+    }
+
+    ctx.fillStyle = '#aaaaaa';
+    ctx.font = '18px monospace';
+    ctx.fillText(`Postęp wideo: ${watchedTime} / 30 s`, 320, 320);
+  }
+
+  drawVideoFrame();
+
+  startBtn.addEventListener('click', () => {
+    if (videoCompleted || isPlaying) return;
+    isPlaying = true;
+    videoEl.play().catch(() => {});
+    videoTicker = setInterval(() => {
+      watchedTime++;
+      drawVideoFrame();
+      videoStatus.textContent = `Czas: ${watchedTime} / 30 s`;
+      if (watchedTime >= 30) {
+        clearInterval(videoTicker);
+        isPlaying = false;
+        videoCompleted = true;
+        videoStatus.textContent = 'Czas: 30 / 30 s (Obejrzano)';
+        updateNextButtonState();
+      }
+    }, 1000);
+  });
+
+  pauseBtn.addEventListener('click', () => {
+    if (!isPlaying) return;
+    isPlaying = false;
+    videoEl.pause();
+    clearInterval(videoTicker);
+  });
+
+  // --- OBSŁUGA ZMIAN W ODPOWIEDZIACH RADIO ---
+  document.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', updateNextButtonState);
+  });
+
+  // --- OBSŁUGA CAPTCHA I MODALA ---
+  const captchaInput = document.getElementById('captcha-input');
+  const captchaCheckBtn = document.getElementById('captcha-check-btn');
+  const modalOverlay = document.getElementById('modal-overlay');
+  const modalTitle = document.getElementById('modal-title');
+  const modalMessage = document.getElementById('modal-message');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+
+  let modalOpen = false;
+  let pendingCaptchaSuccess = false;
+
+  captchaCheckBtn.addEventListener('click', () => {
+    const val = captchaInput.value.trim();
+    modalOpen = true;
+    if (val === 'X7K9P') {
+      modalTitle.textContent = 'Prawidłowo';
+      modalTitle.style.color = '#28a745';
+      modalMessage.textContent = 'Kod został przepisany poprawnie. Zamknij to okienko, aby kontynuować.';
+      pendingCaptchaSuccess = true;
+    } else {
+      modalTitle.textContent = 'Nieprawidłowo';
+      modalTitle.style.color = '#dc3545';
+      modalMessage.textContent = 'Wpisany kod jest błędny. Zamknij okienko i spróbuj jeszcze raz.';
+      pendingCaptchaSuccess = false;
+    }
+    modalOverlay.classList.add('active');
+    updateNextButtonState();
+  });
+
+  modalCloseBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('active');
+    modalOpen = false;
+    if (pendingCaptchaSuccess) {
+      captchaVerified = true;
+      captchaInput.disabled = true;
+      captchaCheckBtn.disabled = true;
+    } else {
+      captchaVerified = false;
+      captchaInput.value = '';
+      captchaInput.focus();
+    }
+    updateNextButtonState();
+  });
+
+  // --- TIMER 20 SEKUND DLA KAŻDEGO KROKU ---
+  function startStepTimer() {
+    clearInterval(timerInterval);
+    timerSeconds = 20;
+    updateNextButtonState();
+
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      if (timerSeconds <= 0) {
+        timerSeconds = 0;
+        clearInterval(timerInterval);
+      }
+      updateNextButtonState();
+    }, 1000);
+  }
+
+  function isCurrentStepValid() {
+    if (timerSeconds > 0) return false;
+    if (modalOpen) return false;
+
+    if (currentStep === 1) {
+      const q1Seen = document.querySelector('input[name="q1_seen"]:checked');
+      const q1Heard = document.querySelector('input[name="q1_heard"]:checked');
+      return videoCompleted && q1Seen !== null && q1Heard !== null;
+    }
+    if (currentStep === 2) {
+      const q2Att = document.querySelector('input[name="q2_attention"]:checked');
+      return q2Att !== null;
+    }
+    if (currentStep === 3) {
+      return captchaVerified;
+    }
+    return false;
+  }
+
+  function updateNextButtonState() {
+    if (timerSeconds > 0) {
+      nextBtn.textContent = `Dalej (${timerSeconds})`;
+      nextBtn.disabled = true;
+    } else {
+      nextBtn.textContent = 'Dalej';
+      nextBtn.disabled = !isCurrentStepValid();
+    }
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if (!isCurrentStepValid()) return;
+
+    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    currentStep++;
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+
+    if (currentStep === 4) {
+      nextBtn.style.display = 'none';
+    } else {
+      startStepTimer();
+    }
+  });
+
+  // Inicjalizacja pierwszego timera po załadowaniu
+  startStepTimer();
+</script>
+
+</body>
+</html>
