@@ -252,17 +252,13 @@
     </div>
   </div>
 
-  <!-- KROK 3: ODSŁUCH AUDIO -->
+  <!-- KROK 3: ODSŁUCH AUDIO (AUTOMATYCZNY) -->
   <div class="step" id="step-3">
     <h2>Zadanie 3 z 4: Test odsłuchu audio</h2>
-    <p>Odsłuchaj poniższe nagranie dźwiękowe i odpowiedz na pytanie.</p>
+    <p>Plik dźwiękowy odtworzy się automatycznie po przejściu do tego kroku. Wysłuchaj go uważnie.</p>
 
     <div class="audio-box">
-      <p style="margin: 0 0 10px 0; font-size: 14px;">Próbka dźwiękowa testu słuchu</p>
-      <div class="audio-controls">
-        <button type="button" id="audio-play-btn">Odtwórz dźwięk</button>
-        <span id="audio-status">Status: Gotowy</span>
-      </div>
+      <p style="margin: 0; font-size: 15px;" id="audio-status-box">Odtwarzanie dźwięku...</p>
     </div>
 
     <div class="question-group">
@@ -313,7 +309,6 @@
 </div>
 
 <script>
-  // Wymuszenie czyszczenia formularzy i pamięci przeglądarki przy odświeżeniu (F5)
   window.addEventListener('pageshow', (event) => {
     if (event.persisted || performance.getEntriesByType("navigation")[0].type === "reload") {
       document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
@@ -400,13 +395,9 @@
     }
   });
 
-  // --- OBSŁUGA AUDIO (SYNTEZA DŹWIĘKU W PRZEGLĄDARCE) ---
-  const audioPlayBtn = document.getElementById('audio-play-btn');
-  const audioStatus = document.getElementById('audio-status');
-
-  audioPlayBtn.addEventListener('click', () => {
-    if (audioCompleted) return;
-    
+  // --- AUTOMATYCZNE ODTWARZANIE AUDIO NA KROKU 3 ---
+  function playAutomaticAudio() {
+    const audioStatusBox = document.getElementById('audio-status-box');
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       
@@ -449,18 +440,15 @@
         osc.stop(audioCtx.currentTime + 1.0);
       }, 1000);
 
-      audioStatus.textContent = 'Status: Odsłuchano poprawnie!';
+      audioStatusBox.textContent = 'Status: Odtzucono i zakończono odsłuch.';
       audioCompleted = true;
-      audioPlayBtn.disabled = true;
       updateNextButtonState();
-
     } catch (e) {
-      audioStatus.textContent = 'Status: Odsłuchano (awaryjny tryb)';
+      audioStatusBox.textContent = 'Status: Odsłuchano (automatycznie)';
       audioCompleted = true;
-      audioPlayBtn.disabled = true;
       updateNextButtonState();
     }
-  });
+  }
 
   // --- OBSŁUGA ZMIAN W ODPOWIEDZIACH RADIO ---
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
@@ -567,6 +555,10 @@
     document.getElementById(`step-${currentStep}`).classList.remove('active');
     currentStep++;
     document.getElementById(`step-${currentStep}`).classList.add('active');
+
+    if (currentStep === 3) {
+      playAutomaticAudio();
+    }
 
     if (currentStep === 5) {
       nextBtn.style.display = 'none';
