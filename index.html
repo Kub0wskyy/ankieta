@@ -15,7 +15,7 @@
     }
     .survey-container {
       background: #ffffff;
-      width: 600px;
+      width: 620px;
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -48,12 +48,15 @@
       overflow: hidden;
       margin-bottom: 15px;
       position: relative;
+      user-select: none;
     }
     video {
       width: 100%;
-      height: 280px;
+      height: 320px;
       display: block;
-      background: #111;
+      background: #000;
+      pointer-events: none;
+      object-fit: cover;
     }
     .video-controls {
       display: flex;
@@ -73,6 +76,10 @@
       color: white;
       font-weight: bold;
     }
+    .video-controls button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
     .next-btn {
       width: 100%;
       padding: 12px;
@@ -91,14 +98,21 @@
       cursor: not-allowed;
     }
     .captcha-box {
-      margin: 15px 0;
+      margin: 20px 0;
       text-align: center;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .captcha-box img {
       border: 1px solid #ccc;
       border-radius: 4px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       display: inline-block;
+      width: 220px;
+      height: 70px;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
     }
     .captcha-input-row {
       display: flex;
@@ -169,10 +183,18 @@
   <!-- KROK 1: WIDEO + PYTANIA -->
   <div class="step active" id="step-1">
     <h2>Zadanie 1 z 3: Obejrzyj materiał wideo</h2>
-    <p>Obejrzyj cały 30-sekundowy film, a następnie odpowiedz na pytania poniżej.</p>
+    <p>Obejrzyj cały 30-sekundowy fragment filmu (przycisk „Dalej” odblokuje się dopiero po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
-      <video id="survey-video" playsinline></video>
+      <video 
+        id="survey-video" 
+        preload="auto"
+        playsinline 
+        disablePictureInPicture 
+        controlsList="nodownload nofullscreen noremoteplayback">
+        <source src="https://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4">
+        <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+      </video>
       <div class="video-controls">
         <button type="button" id="video-start-btn">Start</button>
         <button type="button" id="video-pause-btn">Pauza</button>
@@ -181,17 +203,17 @@
     </div>
 
     <div class="question-group">
-      <p>1. Co widziałeś na ekranie podczas materiału?</p>
-      <label><input type="radio" name="q1_seen" value="zielony_trojkat"> Zielony trójkąt</label>
-      <label><input type="radio" name="q1_seen" value="niebieski_okrag"> Niebieski okrąg</label>
-      <label><input type="radio" name="q1_seen" value="czerwony_kwadrat"> Czerwony kwadrat</label>
+      <p>1. Co widziałeś na nagraniu wideo?</p>
+      <label><input type="radio" name="q1_seen" value="wojowniczka_smok"> Animowane sceny fantasy (wojowniczka w śniegu, walka na miecze i smok)</label>
+      <label><input type="radio" name="q1_seen" value="wyscig_samochodow"> Wyścig samochodów sportowych na pustyni</label>
+      <label><input type="radio" name="q1_seen" value="mecz_pilkarski"> Mecz piłki nożnej na stadionie</label>
     </div>
 
     <div class="question-group">
-      <p>2. Jaki komunikat dźwiękowy / tekstowy pojawił się w połowie filmu?</p>
-      <label><input type="radio" name="q1_heard" value=" sygnal_alarmowy"> Sygnał alarmowy</label>
-      <label><input type="radio" name="q1_heard" value="haslo_alfa"> Hasło: ALFA</label>
-      <label><input type="radio" name="q1_heard" value="szum_morza"> Szum morza</label>
+      <p>2. Co słyszałeś w trakcie odtwarzania filmu?</p>
+      <label><input type="radio" name="q1_heard" value="syrena_policyjna"> Wycie syreny policyjnej w mieście</label>
+      <label><input type="radio" name="q1_heard" value="muzyka_i_glos"> Dramatyczną muzykę filmową, uderzenia bębnów i głos lektora/postaci</label>
+      <label><input type="radio" name="q1_heard" value="cisza"> Całkowitą ciszę przez cały film</label>
     </div>
   </div>
 
@@ -207,16 +229,18 @@
     </div>
   </div>
 
-  <!-- KROK 3: CAPTCHA + MODAL -->
+  <!-- KROK 3: CAPTCHA (ZDJĘCIE PNG) + MODAL -->
   <div class="step" id="step-3">
     <h2>Zadanie 3 z 3: Weryfikacja znaków</h2>
-    <p>Przepisz dokładnie kod widoczny na poniższym obrazku i zatwierdź go przyciskiem „Sprawdź”.</p>
+    <p>Przepisz dokładnie znaki widoczne na poniższym zdjęciu i zatwierdź je przyciskiem „Sprawdź”.</p>
 
-    <div class="captcha-box">
-      <!-- Statyczny obrazek CAPTCHA zakodowany jako SVG (kod: X7K9P) -->
-      <img id="captcha-img" alt="Captcha" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='70'><rect width='100%' height='100%' fill='%23eeeeee'/><line x1='10' y1='15' x2='210' y2='55' stroke='%23999' stroke-width='2'/><line x1='20' y1='60' x2='190' y2='10' stroke='%23aaa' stroke-width='2'/><text x='35' y='48' font-family='monospace' font-size='34' font-weight='bold' fill='%23222' letter-spacing='6'>X7K9P</text></svg>">
+    <div class="captcha-box" oncontextmenu="return false;">
+      <img 
+        id="captcha-img" 
+        alt="Obrazek weryfikacyjny" 
+        draggable="false">
       <div class="captcha-input-row">
-        <input type="text" id="captcha-input" placeholder="Wpisz kod z obrazka..." autocomplete="off">
+        <input type="text" id="captcha-input" placeholder="Wpisz znaki ze zdjęcia..." autocomplete="off">
         <button type="button" id="captcha-check-btn">Sprawdź</button>
       </div>
     </div>
@@ -249,80 +273,74 @@
   let timerSeconds = 20;
   let timerInterval = null;
 
-  // Flagi ukończenia zadań
   let videoCompleted = false;
   let captchaVerified = false;
 
   const nextBtn = document.getElementById('next-btn');
 
-  // --- GENEROWANIE 30-SEKUNDOWEGO STRUMIENIA WIDEO W ELEMENT <video> ---
+  // --- GENEROWANIE NIEKOPIOWALNEGO ZDJĘCIA CAPTCHA (.PNG) ---
+  function generateCaptchaImage() {
+    const c = document.createElement('canvas');
+    c.width = 220;
+    c.height = 70;
+    const ctx = c.getContext('2d');
+
+    // Tło zdjęcia
+    ctx.fillStyle = '#e8ecef';
+    ctx.fillRect(0, 0, c.width, c.height);
+
+    // Szum i linie utrudniające zwykłe kopiowanie
+    for (let i = 0; i < 6; i++) {
+      ctx.strokeStyle = i % 2 === 0 ? '#888' : '#aaa';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(Math.random() * 40, Math.random() * 70);
+      ctx.lineTo(180 + Math.random() * 40, Math.random() * 70);
+      ctx.stroke();
+    }
+
+    // Rysowanie hasła na bitmapie (tekst: smwm)
+    ctx.font = 'italic bold 36px Georgia, serif';
+    ctx.fillStyle = '#222930';
+    ctx.setTransform(1, -0.08, 0.12, 1, 0, 0);
+    ctx.fillText(atob('c213bQ=='), 42, 50);
+
+    // Eksport do czystego pliku graficznego PNG (brak tekstu w DOM)
+    document.getElementById('captcha-img').src = c.toDataURL('image/png');
+  }
+  generateCaptchaImage();
+
+  // --- OBSŁUGA WIDEO (30 SEKUND) ---
   const videoEl = document.getElementById('survey-video');
   const startBtn = document.getElementById('video-start-btn');
   const pauseBtn = document.getElementById('video-pause-btn');
   const videoStatus = document.getElementById('video-status');
 
-  const canvas = document.createElement('canvas');
-  canvas.width = 640;
-  canvas.height = 360;
-  const ctx = canvas.getContext('2d');
-
-  if (canvas.captureStream) {
-    videoEl.srcObject = canvas.captureStream(30);
-  }
-
-  let watchedTime = 0;
-  let isPlaying = false;
-  let videoTicker = null;
-
-  function drawVideoFrame() {
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Rysowanie czerwonego kwadratu
-    ctx.fillStyle = '#e53935';
-    ctx.fillRect(260, 90, 120, 120);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '22px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Materiał testowy - Obiekt: Czerwony kwadrat', 320, 50);
-
-    if (watchedTime >= 12 && watchedTime <= 22) {
-      ctx.fillStyle = '#ffeb3b';
-      ctx.font = 'bold 26px Arial';
-      ctx.fillText(' komunikat: Hasło ALFA ', 320, 260);
-    }
-
-    ctx.fillStyle = '#aaaaaa';
-    ctx.font = '18px monospace';
-    ctx.fillText(`Postęp wideo: ${watchedTime} / 30 s`, 320, 320);
-  }
-
-  drawVideoFrame();
+  const REQUIRED_WATCH_SECONDS = 30;
 
   startBtn.addEventListener('click', () => {
-    if (videoCompleted || isPlaying) return;
-    isPlaying = true;
-    videoEl.play().catch(() => {});
-    videoTicker = setInterval(() => {
-      watchedTime++;
-      drawVideoFrame();
-      videoStatus.textContent = `Czas: ${watchedTime} / 30 s`;
-      if (watchedTime >= 30) {
-        clearInterval(videoTicker);
-        isPlaying = false;
-        videoCompleted = true;
-        videoStatus.textContent = 'Czas: 30 / 30 s (Obejrzano)';
-        updateNextButtonState();
-      }
-    }, 1000);
+    if (videoCompleted) return;
+    videoEl.play();
   });
 
   pauseBtn.addEventListener('click', () => {
-    if (!isPlaying) return;
-    isPlaying = false;
     videoEl.pause();
-    clearInterval(videoTicker);
+  });
+
+  videoEl.addEventListener('timeupdate', () => {
+    if (videoCompleted) return;
+
+    const watched = Math.min(REQUIRED_WATCH_SECONDS, Math.floor(videoEl.currentTime));
+    if (watched >= REQUIRED_WATCH_SECONDS) {
+      videoEl.pause();
+      videoCompleted = true;
+      startBtn.disabled = true;
+      pauseBtn.disabled = true;
+      videoStatus.textContent = `Czas: ${REQUIRED_WATCH_SECONDS} / ${REQUIRED_WATCH_SECONDS} s (Obejrzano całość)`;
+      updateNextButtonState();
+    } else {
+      videoStatus.textContent = `Czas: ${watched} / ${REQUIRED_WATCH_SECONDS} s`;
+    }
   });
 
   // --- OBSŁUGA ZMIAN W ODPOWIEDZIACH RADIO ---
@@ -342,9 +360,10 @@
   let pendingCaptchaSuccess = false;
 
   captchaCheckBtn.addEventListener('click', () => {
-    const val = captchaInput.value.trim();
+    const val = captchaInput.value.trim().toLowerCase();
     modalOpen = true;
-    if (val === 'X7K9P') {
+    // Weryfikacja ze zakodowanym hasłem ze zdjęcia: 'smwm'
+    if (val === atob('c213bQ==')) {
       modalTitle.textContent = 'Prawidłowo';
       modalTitle.style.color = '#28a745';
       modalMessage.textContent = 'Kod został przepisany poprawnie. Zamknij to okienko, aby kontynuować.';
