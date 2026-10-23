@@ -42,32 +42,31 @@
       margin-bottom: 8px;
       cursor: pointer;
     }
-    .video-box {
-      background: #000;
+    .video-box, .audio-box {
+      background: #222;
       border-radius: 6px;
-      overflow: hidden;
+      padding: 15px;
       margin-bottom: 15px;
-      position: relative;
-      user-select: none;
+      text-align: center;
+      color: #fff;
     }
     video {
       width: 100%;
-      height: 320px;
+      height: 300px;
       display: block;
       background: #000;
       pointer-events: none;
       object-fit: cover;
     }
-    .video-controls {
+    .video-controls, .audio-controls {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
-      background: #222;
-      padding: 10px;
-      color: #fff;
+      margin-top: 10px;
       font-size: 14px;
     }
-    .video-controls button {
+    button {
       padding: 6px 14px;
       cursor: pointer;
       border: none;
@@ -76,7 +75,7 @@
       color: white;
       font-weight: bold;
     }
-    .video-controls button:disabled {
+    button:disabled {
       background: #555;
       cursor: not-allowed;
     }
@@ -121,7 +120,6 @@
       margin: 20px 0;
       text-align: center;
       user-select: none;
-      -webkit-user-select: none;
     }
     .captcha-box img {
       border: 1px solid #ccc;
@@ -132,7 +130,6 @@
       height: 70px;
       pointer-events: none;
       user-select: none;
-      -webkit-user-drag: none;
     }
     .captcha-input-row {
       display: flex;
@@ -144,15 +141,6 @@
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 4px;
-    }
-    .captcha-input-row button {
-      padding: 8px 16px;
-      font-size: 15px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
     }
     /* Okienko modalne */
     .modal-overlay {
@@ -217,8 +205,8 @@
 
   <!-- KROK 1: WIDEO + PYTANIA -->
   <div class="step" id="step-1">
-    <h2>Zadanie 1 z 3: Obejrzyj materiał wideo</h2>
-    <p>Obejrzyj cały 30-sekundowy fragment filmu (przycisk „Dalej” odblokuje się dopiero po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
+    <h2>Zadanie 1 z 4: Obejrzyj materiał wideo</h2>
+    <p>Obejrzyj cały 30-sekundowy fragment filmu (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
       <video 
@@ -239,22 +227,22 @@
 
     <div class="question-group">
       <p>1. Co widziałeś na nagraniu wideo?</p>
-      <label><input type="radio" name="q1_seen" value="wojowniczka_smok"> Animowane sceny fantasy (wojowniczka w śniegu, walka na miecze i smok)</label>
-      <label><input type="radio" name="q1_seen" value="wyscig_samochodow"> Wyścig samochodów sportowych na pustyni</label>
-      <label><input type="radio" name="q1_seen" value="mecz_pilkarski"> Mecz piłki nożnej na stadionie</label>
+      <label><input type="radio" name="q1_seen" value="dziewczyna_i_smok"> Postać kobiecą (wojowniczkę), zaśnieżoną krainę oraz małego futrzatego smoka</label>
+      <label><input type="radio" name="q1_seen" value="gotowanie_potrawy"> Instruktaż gotowania zupy w kuchni restauracji</label>
+      <label><input type="radio" name="q1_seen" value="wyscig_auto"> Wyścig samochodów sportowych nocą na ulicach miasta</label>
     </div>
 
     <div class="question-group">
       <p>2. Co słyszałeś w trakcie odtwarzania filmu?</p>
-      <label><input type="radio" name="q1_heard" value="syrena_policyjna"> Wycie syreny policyjnej w mieście</label>
-      <label><input type="radio" name="q1_heard" value="muzyka_i_glos"> Dramatyczną muzykę filmową, uderzenia bębnów i głos lektora/postaci</label>
-      <label><input type="radio" name="q1_heard" value="cisza"> Całkowitą ciszę przez cały film</label>
+      <label><input type="radio" name="q1_heard" value="odglosy_kuchni"> Dźwięk siekania warzyw i skwierczenia patelni</label>
+      <label><input type="radio" name="q1_heard" value="muzyka_fantastyczna"> Epicką, orkiestrową muzykę filmową, wiatr oraz odgłosy walki</label>
+      <label><input type="radio" name="q1_heard" value="fala_radiowa"> Szum zakłóceń radiowych i komunikat policyjny</label>
     </div>
   </div>
 
   <!-- KROK 2: TEST UWAŻNOŚCI -->
   <div class="step" id="step-2">
-    <h2>Zadanie 2 z 3: Pytanie kontrolne</h2>
+    <h2>Zadanie 2 z 4: Pytanie kontrolne</h2>
     <div class="question-group">
       <p>To pytanie sprawdza Twoją uważność. Niezależnie od własnych preferencji, zaznacz odpowiedź „Pomarańczowy”, aby potwierdzić, że czytasz polecenia.</p>
       <label><input type="radio" name="q2_attention" value="niebieski"> Niebieski</label>
@@ -264,9 +252,30 @@
     </div>
   </div>
 
-  <!-- KROK 3: CAPTCHA (ZDJĘCIE PNG) + MODAL -->
+  <!-- KROK 3: ODSŁUCH AUDIO -->
   <div class="step" id="step-3">
-    <h2>Zadanie 3 z 3: Weryfikacja znaków</h2>
+    <h2>Zadanie 3 z 4: Test odsłuchu audio</h2>
+    <p>Odsłuchaj poniższe nagranie dźwiękowe i odpowiedz na pytanie.</p>
+
+    <div class="audio-box">
+      <p style="margin: 0 0 10px 0; font-size: 14px;">Próbka dźwiękowa testu słuchu</p>
+      <div class="audio-controls">
+        <button type="button" id="audio-play-btn">Odtwórz dźwięk</button>
+        <span id="audio-status">Status: Gotowy</span>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <p>Co słyszałeś na powyższym nagraniu audio?</p>
+      <label><input type="radio" name="q3_audio" value="szum_i_dzwonek"> Szum wiatru oraz wysoki dźwięk dzwonka</label>
+      <label><input type="radio" name="q3_audio" value="szczekanie_psa"> Szczekanie psa w tle i miauczenie kota</label>
+      <label><input type="radio" name="q3_audio" value="klakson_autobusowy"> Trąbienie klaksonu samochodowego na ulicy</label>
+    </div>
+  </div>
+
+  <!-- KROK 4: CAPTCHA (ZDJĘCIE PNG) + MODAL -->
+  <div class="step" id="step-4">
+    <h2>Zadanie 4 z 4: Weryfikacja znaków</h2>
     <p>Przepisz dokładnie znaki widoczne na poniższym zdjęciu i zatwierdź je przyciskiem „Sprawdź”.</p>
 
     <div class="captcha-box" oncontextmenu="return false;">
@@ -282,7 +291,7 @@
   </div>
 
   <!-- EKRAN KOŃCOWY -->
-  <div class="step" id="step-4">
+  <div class="step" id="step-5">
     <div class="reward-screen">
       <h2>Ukończona ankieta!</h2>
       <p>Dziękujemy za udział w badaniu.</p>
@@ -290,7 +299,7 @@
     </div>
   </div>
 
-  <!-- PRZYCISK DALEJ Z TIMEREM (Ukryty na ekranie listy 0) -->
+  <!-- PRZYCISK DALEJ Z TIMEREM -->
   <button type="button" id="next-btn" class="next-btn" style="display: none;" disabled>Dalej (20)</button>
 </div>
 
@@ -304,16 +313,16 @@
 </div>
 
 <script>
-  let currentStep = 0; // Zaczynamy od ekranu listy (0)
+  let currentStep = 0;
   let timerSeconds = 20;
   let timerInterval = null;
 
   let videoCompleted = false;
+  let audioCompleted = false;
   let captchaVerified = false;
 
   const nextBtn = document.getElementById('next-btn');
 
-  // Przycisk "Rozpocznij" z listy ankiet
   document.getElementById('start-list-btn').addEventListener('click', () => {
     document.getElementById('step-0').classList.remove('active');
     currentStep = 1;
@@ -380,6 +389,70 @@
       updateNextButtonState();
     } else {
       videoStatus.textContent = `Czas: ${watched} / ${REQUIRED_WATCH_SECONDS} s`;
+    }
+  });
+
+  // --- OBSŁUGA AUDIO (SYNTEZA DŹWIĘKU W PRZEGLĄDARCE) ---
+  const audioPlayBtn = document.getElementById('audio-play-btn');
+  const audioStatus = document.getElementById('audio-status');
+
+  audioPlayBtn.addEventListener('click', () => {
+    if (audioCompleted) return;
+    
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // 1. Generowanie białego szumu (wiatr)
+      const bufferSize = audioCtx.sampleRate * 2; // 2 sekundy szumu
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 800;
+
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+
+      noise.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      noise.start();
+
+      // 2. Generowanie tonu dzwonka
+      setTimeout(() => {
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // Wysokie C (C6)
+        
+        oscGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
+
+        osc.connect(oscGain);
+        oscGain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.0);
+      }, 1000);
+
+      audioStatus.textContent = 'Status: Odsłuchano poprawnie!';
+      audioCompleted = true;
+      audioPlayBtn.disabled = true;
+      updateNextButtonState();
+
+    } catch (e) {
+      audioStatus.textContent = 'Status: Odsłuchano (awaryjny tryb)';
+      audioCompleted = true;
+      audioPlayBtn.disabled = true;
+      updateNextButtonState();
     }
   });
 
@@ -462,6 +535,10 @@
       return q2Att !== null;
     }
     if (currentStep === 3) {
+      const q3Audio = document.querySelector('input[name="q3_audio"]:checked');
+      return audioCompleted && q3Audio !== null;
+    }
+    if (currentStep === 4) {
       return captchaVerified;
     }
     return false;
@@ -485,7 +562,7 @@
     currentStep++;
     document.getElementById(`step-${currentStep}`).classList.add('active');
 
-    if (currentStep === 4) {
+    if (currentStep === 5) {
       nextBtn.style.display = 'none';
     } else {
       startStepTimer();
