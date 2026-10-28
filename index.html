@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Ankietowy - Test 4 z Koszykiem na początku</title>
+  <title>Panel Ankietowy - Test 4</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -382,7 +382,7 @@
     </div>
   </div>
 
-  <!-- PRZYCISK DALEJ Z TIMEREM (zmieniony na 10 sekund) -->
+  <!-- PRZYCISK DALEJ Z TIMEREM: Domyslnie 10 -->
   <button type="button" id="next-btn" class="next-btn" style="display: none;" disabled>Dalej (10)</button>
 </div>
 
@@ -404,7 +404,8 @@
   });
 
   let currentStep = 0;
-  let timerSeconds = 10; // Zmienione z 20 na 10
+  // Czas zmieniony z 20 na 10 sekund
+  let timerSeconds = 10; 
   let timerInterval = null;
 
   let videoCompleted = false;
@@ -444,7 +445,7 @@
     ctx.font = 'italic bold 36px Georgia, serif';
     ctx.fillStyle = '#222930';
     ctx.setTransform(1, -0.08, 0.12, 1, 0, 0);
-    ctx.fillText(atob('c213bQ=='), 42, 50); // Kod "smwm"
+    ctx.fillText(atob('c213bQ=='), 42, 50); // Kod to "smwm"
 
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
@@ -602,6 +603,7 @@
   captchaCheckBtn.addEventListener('click', () => {
     const val = captchaInput.value.trim().toLowerCase();
     modalOpen = true;
+    // Sprawdza czy kod to "smwm"
     if (val === atob('c213bQ==')) {
       modalTitle.textContent = 'Prawidłowo';
       modalTitle.style.color = '#28a745';
@@ -637,12 +639,15 @@
     radio.addEventListener('change', updateNextButtonState);
   });
   
-  // Weryfikacja po wpisaniu tekstu do nowego pola
-  document.getElementById('q2_custom_text').addEventListener('input', updateNextButtonState);
+  // Nasłuch na wpisywanie w polu tekstowym w Kroku 3
+  const q2CustomText = document.getElementById('q2_custom_text');
+  if(q2CustomText) {
+      q2CustomText.addEventListener('input', updateNextButtonState);
+  }
 
   function startStepTimer() {
     clearInterval(timerInterval);
-    timerSeconds = 10; // Zmienione z 20 na 10
+    timerSeconds = 10; // Czas dla każdego kroku to 10 sekund
     updateNextButtonState();
 
     timerInterval = setInterval(() => {
@@ -656,6 +661,7 @@
   }
 
   function isCurrentStepValid() {
+    // Jeżeli licznik jeszcze odlicza lub otwarty jest popup - nie puszczaj dalej
     if (timerSeconds > 0) return false;
     if (modalOpen) return false;
 
@@ -669,8 +675,9 @@
     }
     if (currentStep === 3) {
       const q2Att = document.querySelector('input[name="q2_attention"]:checked');
-      const q2Text = document.getElementById('q2_custom_text').value.trim();
-      return q2Att !== null && q2Text.length > 0;
+      const q2TextNode = document.getElementById('q2_custom_text');
+      // Musi byc zaznaczone pole i pole tekstowe nie może byc puste
+      return q2Att !== null && q2TextNode && q2TextNode.value.trim().length > 0;
     }
     if (currentStep === 4) {
       const q3Audio = document.querySelector('input[name="q3_audio"]:checked');
@@ -684,6 +691,7 @@
 
   function updateNextButtonState() {
     if (currentStep === 0) return;
+    
     if (timerSeconds > 0) {
       nextBtn.textContent = `Dalej (${timerSeconds})`;
       nextBtn.disabled = true;
@@ -694,19 +702,23 @@
   }
 
   nextBtn.addEventListener('click', () => {
+    // Jeżeli przycisk jest odblokowany i naciśnięty:
     if (!isCurrentStepValid()) return;
 
     document.getElementById(`step-${currentStep}`).classList.remove('active');
     currentStep++;
     document.getElementById(`step-${currentStep}`).classList.add('active');
 
+    // Akcje specjalne przy konkretnych krokach
     if (currentStep === 4) {
       playAutomaticAudio();
     }
 
     if (currentStep === 6) {
+      // Ostatni krok - ukryj przycisk "Dalej"
       nextBtn.style.display = 'none';
     } else {
+      // Inne kroki - odpal timer ponownie (na 10s)
       startStepTimer();
     }
   });
