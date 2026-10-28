@@ -270,7 +270,7 @@
   </div>
 
   <!-- KROK 1: DRAG & DROP KOSZYK -->
-  <div class="step" id="step-5">
+  <div class="step" id="step-1">
     <h2>Zadanie 1 z 5: Układanie wyrazu</h2>
     <p style="background: #007bff; color: white; padding: 10px; border-radius: 4px; display: inline-block;">
       Przeciągnij do koszyka litery, z których składa się w słowo <strong>sad</strong>.
@@ -335,7 +335,7 @@
       <label><input type="radio" name="q2_attention" value="czarny"> Czarny</label>
     </div>
 
-    <!-- NOWE PYTANIE DODANE TUTAJ -->
+    <!-- DRUGIE PYTANIE Z POLEM TEKSTOWYM -->
     <div class="question-group">
       <p>2. Jaki jest Twój ulubiony gorący napój? (Wpisz odpowiedź w poniższym polu)</p>
       <input type="text" id="q2_custom_text" placeholder="Np. kawa, herbata..." style="width: 100%; padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
@@ -360,7 +360,7 @@
   </div>
 
   <!-- KROK 5: CAPTCHA -->
-  <div class="step" id="step-1">
+  <div class="step" id="step-5">
     <h2>Zadanie 5 z 5: Weryfikacja znaków</h2>
     <p>Przepisz dokładnie znaki widoczne na poniższym zdjęciu i zatwierdź je przyciskiem „Sprawdź”.</p>
 
@@ -382,8 +382,8 @@
     </div>
   </div>
 
-  <!-- PRZYCISK DALEJ Z TIMEREM -->
-  <button type="button" id="next-btn" class="next-btn" style="display: none;" disabled>Dalej (20)</button>
+  <!-- PRZYCISK DALEJ Z TIMEREM (zmieniony na 10 sekund) -->
+  <button type="button" id="next-btn" class="next-btn" style="display: none;" disabled>Dalej (10)</button>
 </div>
 
 <!-- OKIENKO POPUP (MODAL) -->
@@ -404,7 +404,7 @@
   });
 
   let currentStep = 0;
-  let timerSeconds = 20;
+  let timerSeconds = 10; // Zmienione z 20 na 10
   let timerInterval = null;
 
   let videoCompleted = false;
@@ -487,7 +487,6 @@
     const lettersInBasket = Array.from(basketZone.querySelectorAll('.letter-box'))
                                  .map(el => el.getAttribute('data-letter'));
     
-    // Sprawdza czy w koszyku są dokładnie 3 litery (S, A, D) niezależnie od kolejności
     if (lettersInBasket.length === 3 && 
         lettersInBasket.includes('S') && 
         lettersInBasket.includes('A') && 
@@ -638,12 +637,12 @@
     radio.addEventListener('change', updateNextButtonState);
   });
   
-  // DODANY NASŁUCHIWCZ DLA NOWEGO POLA TEKSTOWEGO
+  // Weryfikacja po wpisaniu tekstu do nowego pola
   document.getElementById('q2_custom_text').addEventListener('input', updateNextButtonState);
 
   function startStepTimer() {
     clearInterval(timerInterval);
-    timerSeconds = 20; 
+    timerSeconds = 10; // Zmienione z 20 na 10
     updateNextButtonState();
 
     timerInterval = setInterval(() => {
@@ -670,7 +669,6 @@
     }
     if (currentStep === 3) {
       const q2Att = document.querySelector('input[name="q2_attention"]:checked');
-      // DODANA WERYFIKACJA NOWEGO POLA TEKSTOWEGO
       const q2Text = document.getElementById('q2_custom_text').value.trim();
       return q2Att !== null && q2Text.length > 0;
     }
