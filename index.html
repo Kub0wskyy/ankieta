@@ -325,13 +325,20 @@
 
   <!-- KROK 3: TEST UWAŻNOŚCI -->
   <div class="step" id="step-3">
-    <h2>Zadanie 3 z 5: Pytanie kontrolne</h2>
+    <h2>Zadanie 3 z 5: Pytania kontrolne</h2>
+    
     <div class="question-group">
-      <p>To pytanie sprawdza Twoją uważność. Niezależnie od własnych preferencji, zaznacz odpowiedź „Pomarańczowy”, aby potwierdzić, że czytasz polecenia.</p>
+      <p>1. To pytanie sprawdza Twoją uważność. Niezależnie od własnych preferencji, zaznacz odpowiedź „Pomarańczowy”, aby potwierdzić, że czytasz polecenia.</p>
       <label><input type="radio" name="q2_attention" value="niebieski"> Niebieski</label>
       <label><input type="radio" name="q2_attention" value="pomaranczowy"> Pomarańczowy</label>
       <label><input type="radio" name="q2_attention" value="zielony"> Zielony</label>
       <label><input type="radio" name="q2_attention" value="czarny"> Czarny</label>
+    </div>
+
+    <!-- NOWE PYTANIE DODANE TUTAJ -->
+    <div class="question-group">
+      <p>2. Jaki jest Twój ulubiony gorący napój? (Wpisz odpowiedź w poniższym polu)</p>
+      <input type="text" id="q2_custom_text" placeholder="Np. kawa, herbata..." style="width: 100%; padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
     </div>
   </div>
 
@@ -630,6 +637,9 @@
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', updateNextButtonState);
   });
+  
+  // DODANY NASŁUCHIWCZ DLA NOWEGO POLA TEKSTOWEGO
+  document.getElementById('q2_custom_text').addEventListener('input', updateNextButtonState);
 
   function startStepTimer() {
     clearInterval(timerInterval);
@@ -660,7 +670,9 @@
     }
     if (currentStep === 3) {
       const q2Att = document.querySelector('input[name="q2_attention"]:checked');
-      return q2Att !== null;
+      // DODANA WERYFIKACJA NOWEGO POLA TEKSTOWEGO
+      const q2Text = document.getElementById('q2_custom_text').value.trim();
+      return q2Att !== null && q2Text.length > 0;
     }
     if (currentStep === 4) {
       const q3Audio = document.querySelector('input[name="q3_audio"]:checked');
