@@ -396,15 +396,7 @@
 </div>
 
 <script>
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "reload") {
-      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-      document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
-    }
-  });
-
   let currentStep = 0;
-  // Czas zmieniony z 20 na 10 sekund
   let timerSeconds = 10; 
   let timerInterval = null;
 
@@ -412,8 +404,68 @@
   let audioCompleted = false;
   let captchaVerified = false;
   let isBasketValid = false;
+  
+  let modalOpen = false;
+  let pendingCaptchaSuccess = false;
 
   const nextBtn = document.getElementById('next-btn');
+
+  // Funkcja całkowicie resetująca ankietę do stanu początkowego
+  function resetSurvey() {
+    clearInterval(timerInterval);
+    currentStep = 0;
+    timerSeconds = 10;
+    
+    videoCompleted = false;
+    audioCompleted = false;
+    captchaVerified = false;
+    isBasketValid = false;
+    modalOpen = false;
+    pendingCaptchaSuccess = false;
+
+    // 1. Odblokuj i wyczyść wszystkie pola formularza
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[type="text"]').forEach(i => {
+      i.value = '';
+      i.disabled = false; // Rozwiązuje problem zablokowanej Captchy przy przeładowaniu
+    });
+
+    // 2. Odblokuj wszystkie przyciski oprócz "Dalej"
+    document.querySelectorAll('button').forEach(b => b.disabled = false);
+    
+    // 3. Zresetuj widoczność Kroków
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    document.getElementById('step-0').classList.add('active');
+
+    // 4. Konfiguracja przycisku Dalej
+    nextBtn.style.display = 'none';
+    nextBtn.disabled = true;
+    nextBtn.textContent = 'Dalej (10)';
+
+    // 5. Reset układanki (Koszyk Drag & Drop)
+    const sourceZone = document.getElementById('letters-source');
+    document.querySelectorAll('.letter-box').forEach(box => {
+      sourceZone.appendChild(box);
+    });
+
+    // 6. Reset wideo
+    const videoEl = document.getElementById('survey-video');
+    videoEl.pause();
+    videoEl.currentTime = 0;
+    document.getElementById('video-status').textContent = 'Czas: 0 / 9 s';
+
+    // 7. Reset audio
+    document.getElementById('audio-status-box').textContent = 'Odtwarzanie dźwięku...';
+
+    // 8. Wygeneruj nową Captchę na start
+    generateCaptchaImage();
+    
+    // 9. Zamknij modale
+    document.getElementById('modal-overlay').classList.remove('active');
+  }
+
+  // Wymuś czyszczenie stanu zawsze przy wejściu / przeładowaniu strony
+  window.addEventListener('pageshow', resetSurvey);
 
   document.getElementById('start-list-btn').addEventListener('click', () => {
     document.getElementById('step-0').classList.remove('active');
@@ -449,12 +501,11 @@
 
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
-  generateCaptchaImage();
 
   // --- OBSŁUGA DRAG & DROP (KROK 1) ---
   const letterBoxes = document.querySelectorAll('.letter-box');
-  const sourceZone = document.getElementById('letters-source');
   const basketZone = document.getElementById('basket-zone');
+  const sourceZone = document.getElementById('letters-source');
   let draggedItem = null;
 
   letterBoxes.forEach(box => {
@@ -596,9 +647,6 @@
   const modalTitle = document.getElementById('modal-title');
   const modalMessage = document.getElementById('modal-message');
   const modalCloseBtn = document.getElementById('modal-close-btn');
-
-  let modalOpen = false;
-  let pendingCaptchaSuccess = false;
 
   captchaCheckBtn.addEventListener('click', () => {
     const val = captchaInput.value.trim().toLowerCase();
