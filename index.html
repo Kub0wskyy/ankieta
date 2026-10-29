@@ -249,6 +249,88 @@
     .letter-box:active {
       cursor: grabbing;
     }
+
+    /* STYLIZACJA FAKE RECAPTCHA */
+    .fake-rc-container {
+      width: 320px;
+      margin: 20px auto;
+      background: #fff;
+      border: 1px solid #d3d3d3;
+      border-radius: 3px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .fake-rc-header {
+      background: #4a90e2;
+      color: white;
+      padding: 20px;
+      font-size: 14px;
+      text-align: left;
+    }
+    .fake-rc-header strong {
+      font-size: 24px;
+      display: block;
+      margin-top: 5px;
+    }
+    .fake-rc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      padding: 3px;
+      background: #fff;
+    }
+    .fake-rc-item {
+      aspect-ratio: 1;
+      background: #eaeaea;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      border: 4px solid transparent;
+      box-sizing: border-box;
+      transition: transform 0.1s;
+      font-size: 12px;
+      color: #555;
+    }
+    .fake-rc-item.selected {
+      border-color: #4a90e2;
+      transform: scale(0.92);
+    }
+    .fake-rc-item.selected::after {
+      content: '✔';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      background: #4a90e2;
+      color: white;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .fake-rc-footer {
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eee;
+    }
+    .fake-rc-footer button {
+      background: #4a90e2;
+      border-radius: 3px;
+      padding: 10px 20px;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+    .fake-rc-footer button:hover {
+      background: #357abd;
+    }
   </style>
 </head>
 <body>
@@ -269,9 +351,9 @@
     </div>
   </div>
 
-  <!-- KROK 1: CAPTCHA (Przeniesiona na Krok 1) -->
+  <!-- KROK 1: CAPTCHA -->
   <div class="step" id="step-1">
-    <h2>Zadanie 1 z 5: Weryfikacja znaków</h2>
+    <h2>Zadanie 1 z 6: Weryfikacja znaków</h2>
     <p>Przepisz dokładnie znaki widoczne na poniższym zdjęciu i zatwierdź je przyciskiem „Sprawdź”. (Przycisk "Dalej" odblokuje się po wpisaniu znaków).</p>
 
     <div class="captcha-box" oncontextmenu="return false;">
@@ -283,11 +365,34 @@
     </div>
   </div>
 
-  <!-- KROK 2: DRAG & DROP KOSZYK -->
+  <!-- KROK 2: FAKE RECAPTCHA (NOWE) -->
   <div class="step" id="step-2">
-    <h2>Zadanie 2 z 5: Układanie wyrazu</h2>
+    <h2>Zadanie 2 z 6: Weryfikacja obrazkowa</h2>
+    <p>Wykonaj zadanie zabezpieczające, aby potwierdzić, że nie jesteś robotem.</p>
+    
+    <div id="fake-rc-widget" class="fake-rc-container">
+      <div class="fake-rc-header">
+        <span id="fake-rc-instruction">Wybierz wszystkie zdjęcia, na których są</span>
+        <strong id="fake-rc-target">hydranty</strong>
+      </div>
+      <div class="fake-rc-grid" id="fake-rc-grid">
+        <!-- Generowane przez JS -->
+      </div>
+      <div class="fake-rc-footer">
+        <div style="font-size: 20px; color: #ccc;">↻ ⓘ</div>
+        <button type="button" id="fake-rc-btn">Dalej</button>
+      </div>
+    </div>
+    <div id="fake-rc-success" style="display: none; color: #28a745; font-weight: bold; text-align: center; margin: 20px 0; font-size: 18px;">
+      ✓ Weryfikacja zakończona sukcesem!
+    </div>
+  </div>
+
+  <!-- KROK 3: DRAG & DROP KOSZYK -->
+  <div class="step" id="step-3">
+    <h2>Zadanie 3 z 6: Układanie wyrazu</h2>
     <p style="background: #007bff; color: white; padding: 10px; border-radius: 4px; display: inline-block;">
-      Przeciągnij do koszyka litery, z których składa się w słowo <strong>sad</strong>.
+      Przeciągnij do koszyka litery, z których składa się słowo <strong>sad</strong>.
     </p>
 
     <div class="dnd-area">
@@ -306,9 +411,9 @@
     </div>
   </div>
 
-  <!-- KROK 3: WIDEO + DOPASOWANE PYTANIA -->
-  <div class="step" id="step-3">
-    <h2>Zadanie 3 z 5: Obejrzyj materiał wideo</h2>
+  <!-- KROK 4: WIDEO + DOPASOWANE PYTANIA -->
+  <div class="step" id="step-4">
+    <h2>Zadanie 4 z 6: Obejrzyj materiał wideo</h2>
     <p>Obejrzyj 10-sekundowy klip wideo (przycisk „Dalej” odblokuje się po obejrzeniu całości i zaznaczeniu odpowiedzi).</p>
 
     <div class="video-box">
@@ -331,15 +436,15 @@
 
     <div class="question-group">
       <p>2. Co robi zwierzę w tym nagraniu?</p>
-      <label><input type="radio" name="q1_action" value="budzisie"> Jest na trawie i oglada się za motylem</label>
+      <label><input type="radio" name="q1_action" value="budzisie"> Jest na trawie i ogląda się za motylem</label>
       <label><input type="radio" name="q1_action" value="biega"> Biegnie za piłką</label>
       <label><input type="radio" name="q1_action" value="plywa"> Pływa w rzece</label>
     </div>
   </div>
 
-  <!-- KROK 4: TEST UWAŻNOŚCI -->
-  <div class="step" id="step-4">
-    <h2>Zadanie 4 z 5: Pytania kontrolne</h2>
+  <!-- KROK 5: TEST UWAŻNOŚCI -->
+  <div class="step" id="step-5">
+    <h2>Zadanie 5 z 6: Pytania kontrolne</h2>
     
     <div class="question-group">
       <p>1. To pytanie sprawdza Twoją uważność. Niezależnie od własnych preferencji, zaznacz odpowiedź „Pomarańczowy”, aby potwierdzić, że czytasz polecenia.</p>
@@ -355,9 +460,9 @@
     </div>
   </div>
 
-  <!-- KROK 5: ODSŁUCH AUDIO -->
-  <div class="step" id="step-5">
-    <h2>Zadanie 5 z 5: Test odsłuchu audio</h2>
+  <!-- KROK 6: ODSŁUCH AUDIO -->
+  <div class="step" id="step-6">
+    <h2>Zadanie 6 z 6: Test odsłuchu audio</h2>
     <p>Plik dźwiękowy odtworzy się automatycznie po przejściu do tego kroku. Wysłuchaj go uważnie.</p>
 
     <div class="audio-box">
@@ -373,7 +478,7 @@
   </div>
 
   <!-- EKRAN KOŃCOWY -->
-  <div class="step" id="step-6">
+  <div class="step" id="step-7">
     <div class="reward-screen">
       <h2>Ukończona ankieta!</h2>
       <p>Dziękujemy za udział w badaniu.</p>
@@ -403,6 +508,10 @@
   let audioCompleted = false;
   let modalOpen = false;
 
+  // Nowe zmienne do Fake reCAPTCHA
+  let rcPhase = 1;
+  let rcCompleted = false;
+
   const nextBtn = document.getElementById('next-btn');
   const basketZone = document.getElementById('basket-zone');
 
@@ -415,6 +524,13 @@
     videoCompleted = false;
     audioCompleted = false;
     modalOpen = false;
+    
+    // Reset Fake reCaptcha
+    rcPhase = 1;
+    rcCompleted = false;
+    document.getElementById('fake-rc-widget').style.display = 'block';
+    document.getElementById('fake-rc-success').style.display = 'none';
+    renderRcGrid(1);
 
     // Odblokuj i wyczyść wszystkie pola formularza
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
@@ -498,8 +614,46 @@
 
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
+  
+  // --- FAKE RECAPTCHA LOGIKA (KROK 2) ---
+  const rcGrid = document.getElementById('fake-rc-grid');
+  const rcTargetText = document.getElementById('fake-rc-target');
+  const rcActionBtn = document.getElementById('fake-rc-btn');
+  
+  const phase1Data = ['Hydrant', 'Rower', 'Auto', 'Hydrant', 'Witryna', 'Przejście', 'Hydrant', 'Drzewo', 'Auto'];
+  const phase2Data = ['Sygnalizacja', 'Auto', 'Sygnalizacja', 'Motocykl', 'Sygnalizacja', 'Witryna', 'Drzewo', 'Auto', 'Sygnalizacja'];
 
-  // --- OBSŁUGA DRAG & DROP (KROK 2) ---
+  function renderRcGrid(phase) {
+    rcGrid.innerHTML = '';
+    const items = phase === 1 ? phase1Data : phase2Data;
+    rcTargetText.textContent = phase === 1 ? 'hydranty' : 'sygnalizacja świetlna';
+    rcActionBtn.textContent = phase === 1 ? 'Dalej' : 'Sprawdź';
+    
+    items.forEach(text => {
+      const div = document.createElement('div');
+      div.className = 'fake-rc-item';
+      div.innerHTML = `<span style="font-size: 30px;">${text === 'Hydrant' ? '🧯' : text === 'Sygnalizacja' ? '🚦' : text === 'Auto' ? '🚗' : text === 'Rower' ? '🚲' : text === 'Witryna' ? '🏪' : text === 'Motocykl' ? '🏍️' : text === 'Przejście' ? '🚶' : '🌳'}</span><span>${text}</span>`;
+      div.addEventListener('click', () => {
+        div.classList.toggle('selected');
+      });
+      rcGrid.appendChild(div);
+    });
+  }
+
+  rcActionBtn.addEventListener('click', () => {
+    if (rcPhase === 1) {
+      rcPhase = 2;
+      renderRcGrid(2);
+    } else {
+      rcCompleted = true;
+      document.getElementById('fake-rc-widget').style.display = 'none';
+      document.getElementById('fake-rc-success').style.display = 'block';
+      updateNextButtonState();
+    }
+  });
+
+
+  // --- OBSŁUGA DRAG & DROP (KROK 3) ---
   const letterBoxes = document.querySelectorAll('.letter-box');
   const sourceZone = document.getElementById('letters-source');
   let draggedItem = null;
@@ -526,13 +680,12 @@
     zone.addEventListener('drop', function(e) {
       if (draggedItem) {
         this.appendChild(draggedItem);
-        // Odśwież stan przycisku Dalej natychmiast po upuszczeniu literki
         updateNextButtonState();
       }
     });
   });
 
-  // --- OBSŁUGA WIDEO (KROK 3) ---
+  // --- OBSŁUGA WIDEO (KROK 4) ---
   const videoEl = document.getElementById('survey-video');
   const startBtn = document.getElementById('video-start-btn');
   const pauseBtn = document.getElementById('video-pause-btn');
@@ -572,7 +725,7 @@
     }
   });
 
-  // --- AUTOMATYCZNE ODTWARZANIE AUDIO (KROK 5) ---
+  // --- AUTOMATYCZNE ODTWARZANIE AUDIO (KROK 6) ---
   function playAutomaticAudio() {
     const audioStatusBox = document.getElementById('audio-status-box');
     try {
@@ -684,34 +837,30 @@
   }
 
   function isCurrentStepValid() {
-    // Jeżeli licznik jeszcze odlicza lub otwarty jest popup - nie puszczaj dalej
     if (timerSeconds > 0) return false;
     if (modalOpen) return false;
 
-    // NOWA LUŹNA WERYFIKACJA (sprawdza czy COKOLWIEK jest wpisane/zaznaczone/przeciągnięte)
-    if (currentStep === 1) {
-      // Wystarczy, że cokolwiek wpisano do pola captcha (bez rygoru klikania Sprawdź)
+    if (currentStep === 1) { // Krok 1 (Stara Captcha)
       const capInput = document.getElementById('captcha-input');
       return capInput && capInput.value.trim().length > 0;
     }
-    if (currentStep === 2) {
-      // Koszyk - Wystarczy, że JEDNA literka jest w koszyku
+    if (currentStep === 2) { // Krok 2 (Nowa Fake reCAPTCHA)
+      return rcCompleted;
+    }
+    if (currentStep === 3) { // Krok 3 (Drag & drop)
       return basketZone.querySelectorAll('.letter-box').length > 0;
     }
-    if (currentStep === 3) {
-      // Wideo - Wystarczy, że film obejrzany i cokolwiek zaznaczone
+    if (currentStep === 4) { // Krok 4 (Wideo)
       const q1Seen = document.querySelector('input[name="q1_seen"]:checked');
       const q1Action = document.querySelector('input[name="q1_action"]:checked');
       return videoCompleted && q1Seen !== null && q1Action !== null;
     }
-    if (currentStep === 4) {
-      // Pytanie kontrolne - Wystarczy, że cokolwiek jest wcisniete na liscie i wpisany choc 1 znak
+    if (currentStep === 5) { // Krok 5 (Pytanie kontrolne)
       const q2Att = document.querySelector('input[name="q2_attention"]:checked');
       const q2TextNode = document.getElementById('q2_custom_text');
       return q2Att !== null && q2TextNode && q2TextNode.value.trim().length > 0;
     }
-    if (currentStep === 5) {
-      // Audio - Wystarczy, że audio odtworzone i cokolwiek wybrane
+    if (currentStep === 6) { // Krok 6 (Audio)
       const q3Audio = document.querySelector('input[name="q3_audio"]:checked');
       return audioCompleted && q3Audio !== null;
     }
@@ -731,23 +880,19 @@
   }
 
   nextBtn.addEventListener('click', () => {
-    // Jeżeli przycisk jest odblokowany i naciśnięty:
     if (!isCurrentStepValid()) return;
 
     document.getElementById(`step-${currentStep}`).classList.remove('active');
     currentStep++;
     document.getElementById(`step-${currentStep}`).classList.add('active');
 
-    // Akcje specjalne przy konkretnych krokach
-    if (currentStep === 5) { // Odtwarzanie dźwięku przeniesiono na krok 5
+    if (currentStep === 6) { // Odtwarzanie dźwięku jest w Kroku 6
       playAutomaticAudio();
     }
 
-    if (currentStep === 6) {
-      // Ostatni krok - ukryj przycisk "Dalej"
+    if (currentStep === 7) { // Zakończenie jest w Kroku 7
       nextBtn.style.display = 'none';
     } else {
-      // Inne kroki - odpal timer ponownie (na 10s)
       startStepTimer();
     }
   });
