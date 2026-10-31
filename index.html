@@ -365,7 +365,7 @@
     </div>
   </div>
 
-  <!-- KROK 2: FAKE RECAPTCHA (NOWE) -->
+  <!-- KROK 2: FAKE RECAPTCHA -->
   <div class="step" id="step-2">
     <h2>Zadanie 2 z 6: Weryfikacja obrazkowa</h2>
     <p>Wykonaj zadanie zabezpieczające, aby potwierdzić, że nie jesteś robotem.</p>
@@ -486,7 +486,7 @@
     </div>
   </div>
 
-  <!-- PRZYCISK DALEJ Z TIMEREM: Domyslnie 10 -->
+  <!-- PRZYCISK DALEJ Z TIMEREM -->
   <button type="button" id="next-btn" class="next-btn" style="display: none;" disabled>Dalej (10)</button>
 </div>
 
@@ -508,14 +508,12 @@
   let audioCompleted = false;
   let modalOpen = false;
 
-  // Nowe zmienne do Fake reCAPTCHA
   let rcPhase = 1;
   let rcCompleted = false;
 
   const nextBtn = document.getElementById('next-btn');
   const basketZone = document.getElementById('basket-zone');
 
-  // Funkcja całkowicie resetująca ankietę do stanu początkowego
   function resetSurvey() {
     clearInterval(timerInterval);
     currentStep = 0;
@@ -525,39 +523,32 @@
     audioCompleted = false;
     modalOpen = false;
     
-    // Reset Fake reCaptcha
     rcPhase = 1;
     rcCompleted = false;
     document.getElementById('fake-rc-widget').style.display = 'block';
     document.getElementById('fake-rc-success').style.display = 'none';
     renderRcGrid(1);
 
-    // Odblokuj i wyczyść wszystkie pola formularza
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
     document.querySelectorAll('input[type="text"]').forEach(i => {
       i.value = '';
       i.disabled = false;
     });
 
-    // Odblokuj przyciski startu/pauzy
     document.querySelectorAll('button').forEach(b => b.disabled = false);
     
-    // Zresetuj widoczność Kroków
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.getElementById('step-0').classList.add('active');
 
-    // Konfiguracja przycisku Dalej
     nextBtn.style.display = 'none';
     nextBtn.disabled = true;
     nextBtn.textContent = 'Dalej (10)';
 
-    // Reset układanki (Koszyk Drag & Drop)
     const sourceZone = document.getElementById('letters-source');
     document.querySelectorAll('.letter-box').forEach(box => {
       sourceZone.appendChild(box);
     });
 
-    // Reset wideo
     const videoEl = document.getElementById('survey-video');
     videoEl.pause();
     videoEl.currentTime = 0;
@@ -565,30 +556,26 @@
        document.getElementById('video-status').textContent = 'Czas: 0 / 9 s';
     }
 
-    // Reset audio
     if(document.getElementById('audio-status-box')) {
        document.getElementById('audio-status-box').textContent = 'Odtwarzanie dźwięku...';
     }
 
-    // Wygeneruj nową Captchę na start
     generateCaptchaImage();
     
-    // Zamknij modale
     document.getElementById('modal-overlay').classList.remove('active');
   }
 
-  // Wymuś czyszczenie stanu zawsze przy wejściu / przeładowaniu strony
   window.addEventListener('pageshow', resetSurvey);
 
   document.getElementById('start-list-btn').addEventListener('click', () => {
     document.getElementById('step-0').classList.remove('active');
-    currentStep = 1; // Krok 1 = Captcha
+    currentStep = 1;
     document.getElementById('step-1').classList.add('active');
     nextBtn.style.display = 'block';
     startStepTimer();
   });
 
-  // --- GENEROWANIE NIEKOPIOWALNEGO ZDJĘCIA CAPTCHA (.PNG) ---
+  // --- GENEROWANIE OBRAZKA CAPTCHA Z TEKSTEM s8BzG ---
   function generateCaptchaImage() {
     const c = document.createElement('canvas');
     c.width = 220;
@@ -610,7 +597,7 @@
     ctx.font = 'italic bold 36px Georgia, serif';
     ctx.fillStyle = '#222930';
     ctx.setTransform(1, -0.08, 0.12, 1, 0, 0);
-    ctx.fillText(atob('c213bQ=='), 42, 50); // Kod to "smwm"
+    ctx.fillText('s8BzG', 35, 50); // Nowy kod bezpośrednio na canvas
 
     document.getElementById('captcha-img').src = c.toDataURL('image/png');
   }
@@ -651,7 +638,6 @@
       updateNextButtonState();
     }
   });
-
 
   // --- OBSŁUGA DRAG & DROP (KROK 3) ---
   const letterBoxes = document.querySelectorAll('.letter-box');
@@ -784,10 +770,10 @@
   const modalCloseBtn = document.getElementById('modal-close-btn');
 
   captchaCheckBtn.addEventListener('click', () => {
-    const val = captchaInput.value.trim().toLowerCase();
+    const val = captchaInput.value.trim(); // Bez toLowerCase, aby zachować wielkość znaków
     modalOpen = true;
     
-    if (val === atob('c213bQ==')) {
+    if (val === 's8BzG') {
       modalTitle.textContent = 'Prawidłowo';
       modalTitle.style.color = '#28a745';
       modalMessage.textContent = 'Kod został przepisany poprawnie. Zamknij to okienko, aby kontynuować.';
@@ -840,11 +826,11 @@
     if (timerSeconds > 0) return false;
     if (modalOpen) return false;
 
-    if (currentStep === 1) { // Krok 1 (Stara Captcha)
+    if (currentStep === 1) { // Krok 1 (Captcha)
       const capInput = document.getElementById('captcha-input');
       return capInput && capInput.value.trim().length > 0;
     }
-    if (currentStep === 2) { // Krok 2 (Nowa Fake reCAPTCHA)
+    if (currentStep === 2) { // Krok 2 (Fake reCAPTCHA)
       return rcCompleted;
     }
     if (currentStep === 3) { // Krok 3 (Drag & drop)
@@ -886,11 +872,11 @@
     currentStep++;
     document.getElementById(`step-${currentStep}`).classList.add('active');
 
-    if (currentStep === 6) { // Odtwarzanie dźwięku jest w Kroku 6
+    if (currentStep === 6) {
       playAutomaticAudio();
     }
 
-    if (currentStep === 7) { // Zakończenie jest w Kroku 7
+    if (currentStep === 7) {
       nextBtn.style.display = 'none';
     } else {
       startStepTimer();
